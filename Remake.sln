@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remake", "Remake\Remake.csproj", "{62821A5B-79ED-4D70-A84D-ECBF4AC06D02}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SetStats", "SetStats\SetStats.csproj", "{0287B64E-379C-40FA-B11A-9E0C5556552E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{62821A5B-79ED-4D70-A84D-ECBF4AC06D02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62821A5B-79ED-4D70-A84D-ECBF4AC06D02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62821A5B-79ED-4D70-A84D-ECBF4AC06D02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0287B64E-379C-40FA-B11A-9E0C5556552E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0287B64E-379C-40FA-B11A-9E0C5556552E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0287B64E-379C-40FA-B11A-9E0C5556552E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0287B64E-379C-40FA-B11A-9E0C5556552E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
