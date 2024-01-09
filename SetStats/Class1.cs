@@ -1,6 +1,6 @@
 ﻿using Utilities;
 
-namespace SetStats
+namespace Stats
 {
     public class SetStat
     {
@@ -40,7 +40,7 @@ namespace SetStats
 
         public static float[,] PersonalizedLevel(float[,] stats)
         {
-            const string HP = "Hit Points: ",
+            const string Hp = "Hit Points: ",
                 Attack = "Attack: ",
                 DmgReduccion = "Damage  Reduction: ",
                 RangedIn = "In range [{0}-{1}]",
@@ -51,7 +51,7 @@ namespace SetStats
                 MaxAttemps = 3,
                 DefaultAttemps=1;
 
-            string[] StatsRequirement = { HP + RangedIn, Attack + RangedIn, DmgReduccion + RangedIn };
+            string[] StatsRequirement = { Hp + RangedIn, Attack + RangedIn, DmgReduccion + RangedIn };
 
             for (int i = 0; i < stats.GetLength(1); i++)
             { 
@@ -69,6 +69,8 @@ namespace SetStats
                     if (!inRange)
                     {
                         attemps++;
+                        if (!Utility.InRange(attemps, MaxAttemps))
+                            stats[RowToSet, i] = stats[MinValueRow,i];
                     }
                     else
                     {
@@ -87,8 +89,8 @@ namespace SetStats
                 MaxValueRow = 1,
                 ReachMaxNum = 1;
 
-            Random rnd = new Random();
-            for (int i = 0; i < stats.GetLength(i); i++)
+            Random rnd = new();
+            for (int i = 0; i < stats.GetLength(0); i++)
             {
                 stats[RowToSet, i] = rnd.Next(
                     (int)stats[MinValueRow, i],
@@ -97,5 +99,27 @@ namespace SetStats
             }
             return stats;
         }
+    }
+    public class GetStat
+    {
+        public static float getHp(float[,] stats)
+        {
+            const int hpColumn = 0,
+                currentHpRow = 3;
+            return stats[hpColumn, currentHpRow];
+        }
+        public static float getAttack(float[,] stats)
+        {
+            const int attackColumn = 1,
+                currentAttackRow = 3;
+            return stats[attackColumn, currentAttackRow];
+        }
+        public static float getReduction(float[,] stats)
+        {
+            const int reductionColumn = 0,
+                currentReductionRow = 3;
+            return stats[reductionColumn, currentReductionRow];
+        }
+
     }
 }
