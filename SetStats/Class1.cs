@@ -1,6 +1,7 @@
-﻿using Utilities;
+﻿using System.Xml.Linq;
+using Utilities;
 
-namespace SetStats
+namespace Rpg
 {
     public class SetStat
     {
@@ -97,5 +98,64 @@ namespace SetStats
             }
             return stats;
         }
+        public static string Rename(string name)
+        {
+            const string NewName = "Character's new name is ",
+                ConfirmMsg = "Is {0} {1}'s new name? \n[Y/N]",
+                 Yes = "Y", No = "N",
+                 ErrorMsg = "Wrong insert, try again";
+            string newName,userInput;
+            bool confirmation=false, checker;
+            do
+            {
+                Console.WriteLine(NewName);
+                newName = Utility.NameMayus(Console.ReadLine() ?? name);
+                Console.WriteLine(ConfirmMsg,newName,name);
+                do
+                {
+                    userInput = Console.ReadLine()?.ToUpper() ?? "";
+                    switch (userInput)
+                    {
+                        case Yes:
+                            checker = true;
+                            confirmation = true;
+                            break;
+                        case No:
+                            checker = true;
+                            break;
+                        default:
+                            Console.WriteLine(ErrorMsg);
+                            checker = false;
+                            break;
+
+                    }
+                } while (!checker);
+            } while (!confirmation);
+
+            return newName;
+        }
+
+    }
+    public class GetStat
+    {
+        public static float getHp(float[,] stats)
+        {
+            const int hpColumn = 0,
+                currentHpRow = 3;
+            return stats[hpColumn, currentHpRow];
+        }
+        public static float getAttack(float[,] stats)
+        {
+            const int attackColumn = 1,
+                currentAttackRow = 3;
+            return stats[attackColumn, currentAttackRow];
+        }
+        public static float getReduction(float[,] stats)
+        {
+            const int reductionColumn = 0,
+                currentReductionRow = 3;
+            return stats[reductionColumn, currentReductionRow];
+        }
+
     }
 }
