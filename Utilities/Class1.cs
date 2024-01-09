@@ -1,4 +1,6 @@
-﻿namespace Utilities
+﻿using System.Diagnostics;
+
+namespace Utilities
 {
     public class Utility
     {
@@ -22,6 +24,7 @@
             name = new string (chars);
             return name;
         }
+
         public static void TwoControl(string input,string errorMsg,ref int numOutput)
         {
 
@@ -38,7 +41,9 @@
         #region checkers
         public static bool MenuCheck(string input)
         {
+
             const string ZeroStr="0",OneStr = "1";
+
             switch (input)
             {
                 case ZeroStr:

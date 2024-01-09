@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Reflection.Metadata;
 using Rpg;
 using Utilities;
+
 namespace Remake
 {
     public class Program
@@ -15,9 +15,12 @@ namespace Remake
                                        "\n\t2.Difficult: lowest stats for heroes, highest stats for monster" +
                                        "\n\t3.Personalized: personalize your heroes attributes and monster " +
                                        "\n\t4.RandomStats: Is the goddess of luck smiling upon you? ",
+
                         ErrorMsg = "Wrong insert, try again",
                         RenameMsg = "Do you want rename characters:\n[Y/N]",
                         Yes = "Y", No = "N";
+                      ErrorMsg = "Wrong insert, try again";
+
             const string OneStr = "1", TwoStr = "2", ThreeStr = "3", FourStr = "4";
             const int Zero=0,One = 1, Two = 2, Three = 3;   
             #region archerStats
@@ -54,13 +57,15 @@ namespace Remake
             };
             #endregion
 
+              
             #region PorgramVariables
             string userInput;
             int userCommand = Zero,
                 difficulty=Zero ;
-            bool checker, rename=true, isHero = true;
+            bool checker, isHero = true;
             #endregion
 
+              
             Console.WriteLine(Menu);
             do
             {
@@ -111,6 +116,8 @@ namespace Remake
 
                     }
                 } while (!checker);
+          
+          
                 if (rename)
                 {
                     archerName = SetStat.Rename(archerName);
