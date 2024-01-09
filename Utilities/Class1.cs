@@ -16,6 +16,15 @@ namespace Utilities
         {
             return num==secondNum;
         }
+
+        public static string NameMayus(string name)
+        {
+            char[] chars = name.ToCharArray();
+            chars[0] = char.ToUpper(chars[0]);
+            name = new string (chars);
+            return name;
+        }
+
         public static void TwoControl(string input,string errorMsg,ref int numOutput)
         {
 
@@ -32,12 +41,13 @@ namespace Utilities
         #region checkers
         public static bool MenuCheck(string input)
         {
-            const string ZeroStr="0",OneStr = "1", TwoStr = "2";
+
+            const string ZeroStr="0",OneStr = "1";
+
             switch (input)
             {
                 case ZeroStr:
                 case OneStr:
-                case TwoStr:
                     return true;
                 default: return false;
             }

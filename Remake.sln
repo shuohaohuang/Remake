@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Remake", "Remake\Remake.csproj", "{62821A5B-79ED-4D70-A84D-ECBF4AC06D02}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SetStats", "SetStats\SetStats.csproj", "{0287B64E-379C-40FA-B11A-9E0C5556552E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game", "SetStats\Game.csproj", "{0287B64E-379C-40FA-B11A-9E0C5556552E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", "Utilities\Utilities.csproj", "{3F482357-BC41-42D7-9E77-FDEAA0FF5797}"
 EndProject

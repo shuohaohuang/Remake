@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Reflection.Metadata;
-using Stats;
+using Rpg;
 using Utilities;
+
 namespace Remake
 {
     public class Program
@@ -15,7 +15,12 @@ namespace Remake
                                        "\n\t2.Difficult: lowest stats for heroes, highest stats for monster" +
                                        "\n\t3.Personalized: personalize your heroes attributes and monster " +
                                        "\n\t4.RandomStats: Is the goddess of luck smiling upon you? ",
-                        ErrorMsg = "Wrong insert, try again";
+
+                        ErrorMsg = "Wrong insert, try again",
+                        RenameMsg = "Do you want rename characters:\n[Y/N]",
+                        Yes = "Y", No = "N";
+                      ErrorMsg = "Wrong insert, try again";
+
             const string OneStr = "1", TwoStr = "2", ThreeStr = "3", FourStr = "4";
             const int Zero=0,One = 1, Two = 2, Three = 3;   
             #region archerStats
@@ -52,6 +57,7 @@ namespace Remake
             };
             #endregion
 
+              
             #region PorgramVariables
             string userInput;
             int userCommand = Zero,
@@ -59,6 +65,7 @@ namespace Remake
             bool checker, isHero = true;
             #endregion
 
+              
             Console.WriteLine(Menu);
             do
             {
@@ -89,17 +96,38 @@ namespace Remake
                     }
                 } while (!checker);
 
-                archer = SetStat.StatSetter(archer, difficulty, isHero);
-                foreach (int i in archer)
+                Console.WriteLine(RenameMsg);
+                do
                 {
-                    Console.WriteLine(i);
+                    userInput = Console.ReadLine()?.ToUpper() ?? "";
+                    switch (userInput) 
+                    {
+                        case Yes:
+                            checker = true;
+                            break;
+                        case No:
+                            rename = false;
+                            checker = true;
+                            break;
+                        default:
+                            Console.WriteLine(ErrorMsg);
+                            checker = false;
+                            break;
+
+                    }
+                } while (!checker);
+          
+          
+                if (rename)
+                {
+                    archerName = SetStat.Rename(archerName);
                 }
+                archer = SetStat.StatSetter(archer, difficulty, isHero);
+                
                 monster = SetStat.StatSetter(monster, difficulty, !isHero);
-                foreach (int i in monster)
-                { Console.WriteLine(i); }
+
             }
             
-
         }
     }
 }
