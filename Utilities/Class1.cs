@@ -10,5 +10,9 @@
         {
             return (num >= min && num <= max);
         }
+        public static bool Equal(int num, int secondNum)
+        {
+            return num==secondNum;
+        }
     }
 }
