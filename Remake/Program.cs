@@ -19,7 +19,6 @@ namespace Remake
                         ErrorMsg = "Wrong insert, try again",
                         RenameMsg = "Do you want rename characters:\n[Y/N]",
                         Yes = "Y", No = "N";
-                      ErrorMsg = "Wrong insert, try again";
 
             const string OneStr = "1", TwoStr = "2", ThreeStr = "3", FourStr = "4";
             const int Zero=0,One = 1, Two = 2, Three = 3;   
@@ -62,7 +61,7 @@ namespace Remake
             string userInput;
             int userCommand = Zero,
                 difficulty=Zero ;
-            bool checker, isHero = true;
+            bool checker, rename=true,isHero = true;
             #endregion
 
               
