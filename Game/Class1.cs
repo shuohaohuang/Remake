@@ -101,7 +101,7 @@ namespace Rpg
             }
             return stats;
         }
-        public static string Rename(string name)
+        public static string Rename(string name)//
         {
             const string NewName = "Character's new name is ",
                 ConfirmMsg = "Is {0} {1}'s new name? \n[Y/N]",

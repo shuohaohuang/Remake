@@ -20,7 +20,7 @@ namespace Remake
                         RenameMsg = "Do you want rename characters:\n[Y/N]",
                         Yes = "Y", No = "N";
 
-            const string OneStr = "1", TwoStr = "2", ThreeStr = "3", FourStr = "4";
+            const string ZeroStr="0", OneStr = "1", TwoStr = "2", ThreeStr = "3", FourStr = "4";
             const int Zero=0,One = 1, Two = 2, Three = 3;   
             #region archerStats
             //sample
@@ -59,9 +59,12 @@ namespace Remake
               
             #region PorgramVariables
             string userInput;
+            string[] validInputsTwoInts = { OneStr, ZeroStr },
+                     validInputsFourInts = { OneStr, TwoStr, ThreeStr, FourStr },
+                     validInputsBool = { Yes, No };
             int userCommand = Zero,
                 difficulty=Zero ;
-            bool checker, rename=true,isHero = true;
+            bool checker,isHero = true;
             #endregion
 
               
@@ -69,7 +72,17 @@ namespace Remake
             do
             {
                 userInput = Console.ReadLine() ?? "";
-                Utility.TwoControl(userInput, ErrorMsg, ref userCommand);
+                switch (Utility.Check(userInput, validInputsTwoInts))
+                {
+                    case true:
+                        userCommand = Convert.ToInt32(userInput);
+                        checker = true;
+                        break;
+                    default:
+                        Console.WriteLine(ErrorMsg);
+                        checker = false;
+                        break;
+                }
                 checker = Utility.MenuCheck(userInput);
             } while (!checker);
 
@@ -79,12 +92,9 @@ namespace Remake
                 do
                 {
                     userInput = Console.ReadLine() ?? "";
-                    switch (userInput)
+                    switch (Utility.Check(userInput,validInputsFourInts))
                     {
-                        case OneStr:
-                        case TwoStr:
-                        case ThreeStr:
-                        case FourStr:
+                        case true:
                             difficulty=Convert.ToInt32(userInput);
                             checker = true;
                             break;
@@ -99,13 +109,9 @@ namespace Remake
                 do
                 {
                     userInput = Console.ReadLine()?.ToUpper() ?? "";
-                    switch (userInput) 
+                    switch (Utility.Check(userInput, validInputsBool)) 
                     {
-                        case Yes:
-                            checker = true;
-                            break;
-                        case No:
-                            rename = false;
+                        case true:
                             checker = true;
                             break;
                         default:
@@ -116,8 +122,7 @@ namespace Remake
                     }
                 } while (!checker);
           
-          
-                if (rename)
+                if (userInput==Yes)
                 {
                     archerName = SetStat.Rename(archerName);
                 }

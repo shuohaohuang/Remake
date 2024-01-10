@@ -39,35 +39,21 @@ namespace Utilities
         }
 
         #region checkers
-        public static bool MenuCheck(string input)
-        {
 
-            const string ZeroStr = "0", OneStr = "1";
-
-            switch (input)
-            {
-                case ZeroStr:
-                case OneStr:
-                    return true;
-                default: return false;
-            }
-        }
-        public static bool CheckTrio(string input)
+        public static bool Check(string input, string[] validStrings)
         {
-            const string OneStr = "1", TwoStr = "2", ThreeStr = "3";
-            switch (input)
+            bool result = false;
+            for (int i = 0; i < validStrings.Length && !result; i++)
             {
-                case OneStr:
-                case TwoStr:
-                case ThreeStr:
-                    return true;
-                default: return false;
+                result = input==validStrings[i];
             }
+            return result;
         }
+        #endregion
     }
 
 
-    #endregion
+
     /*
     /// <summary>
     /// Este método realiza alguna operación con los parámetros dados.
