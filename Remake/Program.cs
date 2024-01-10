@@ -83,7 +83,6 @@ namespace Remake
                         checker = false;
                         break;
                 }
-                checker = Utility.MenuCheck(userInput);
             } while (!checker);
 
             if (Utility.Equal(userCommand, One))
@@ -96,11 +95,11 @@ namespace Remake
                     {
                         case true:
                             difficulty=Convert.ToInt32(userInput);
-                            checker = true;
+                            checker = Utility.Check(userInput, validInputsFourInts);
                             break;
                         default: 
                             Console.WriteLine(ErrorMsg);
-                            checker = false;
+                            checker = Utility.Check(userInput, validInputsFourInts);
                             break;
                     }
                 } while (!checker);
@@ -112,11 +111,11 @@ namespace Remake
                     switch (Utility.Check(userInput, validInputsBool)) 
                     {
                         case true:
-                            checker = true;
+                            checker = Utility.Check(userInput, validInputsBool);
                             break;
                         default:
                             Console.WriteLine(ErrorMsg);
-                            checker = false;
+                            checker = Utility.Check(userInput, validInputsBool);
                             break;
 
                     }

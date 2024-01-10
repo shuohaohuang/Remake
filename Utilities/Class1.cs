@@ -25,18 +25,6 @@ namespace Utilities
             return name;
         }
 
-        public static void TwoControl(string input, string errorMsg, ref int numOutput)
-        {
-
-            if (MenuCheck(input))
-            {
-                numOutput = Convert.ToInt32(input);
-            }
-            else
-            {
-                Console.WriteLine(errorMsg);
-            }
-        }
 
         #region checkers
 
