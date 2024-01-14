@@ -1,5 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using System;
 using Utilities;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Rpg
 
@@ -30,8 +31,6 @@ namespace Rpg
             {
                 rowToPick = difficulty == 1 ? 0 : 1;
             }
-
-
             for (int i = 0; i < stats.GetLength(1); i++)
             {
                 stats[RowToSet, i] = stats[rowToPick, i];
@@ -103,63 +102,61 @@ namespace Rpg
         }
         public static string Rename(string name)//
         {
-            const string NewName = "Character's new name is ",
-                ConfirmMsg = "Is {0} {1}'s new name? \n[Y/N]",
-                 Yes = "Y", No = "N",
-                 ErrorMsg = "Wrong insert, try again";
-            string newName, userInput;
-            bool confirmation = false, checker;
-            do
-            {
-                Console.WriteLine(NewName);
+            const string RequestNameMsg = "Insert {0}'s new name is ",
+                         RenamedMsg = "{0}'s new name is {1}";
+
+            string newName;
+                Console.WriteLine(RequestNameMsg,name);
                 newName = Utility.NameMayus(Console.ReadLine() ?? name);
-                Console.WriteLine(ConfirmMsg, newName, name);
-                do
-                {
-                    userInput = Console.ReadLine()?.ToUpper() ?? "";
-                    switch (userInput)
-                    {
-                        case Yes:
-                            checker = true;
-                            confirmation = true;
-                            break;
-                        case No:
-                            checker = true;
-                            break;
-                        default:
-                            Console.WriteLine(ErrorMsg);
-                            checker = false;
-                            break;
-
-                    }
-                } while (!checker);
-            } while (!confirmation);
-
+                Console.WriteLine(RenamedMsg,name,newName);
             return newName;
         }
 
     }
     public class GetStat
     {
-        public static float getHp(float[,] stats)
+        public static float Hp(float[,] stats)
         {
             const int hpColumn = 0,
-                currentHpRow = 3;
-            return stats[hpColumn, currentHpRow];
+                SettedHpRow = 2;
+            return stats[SettedHpRow , hpColumn];
         }
-        public static float getAttack(float[,] stats)
+        public static float Attack(float[,] stats)
         {
             const int attackColumn = 1,
-                currentAttackRow = 3;
-            return stats[attackColumn, currentAttackRow];
+                SettedAttackRow = 2;
+            return stats[SettedAttackRow, attackColumn];
         }
-        public static float getReduction(float[,] stats)
+        public static float Reduction(float[,] stats)
         {
-            const int reductionColumn = 0,
-                currentReductionRow = 3;
-            return stats[reductionColumn, currentReductionRow];
+            const int reductionColumn = 2,
+                SettedReductionRow = 2;
+            return stats[SettedReductionRow, reductionColumn];
         }
 
     }
-
+    public class Battle
+    {
+        public static float CalculateDamage(float attackerAd, float DefenderReduction )
+        {
+            const float Percentage = 100, One = 1;
+            return attackerAd * (One-(DefenderReduction/Percentage));
+        }
+        public static float CalculateDamage(float attackerAd, float DefenderReduction,float guardEffect, bool isGuarding)
+        {
+            const int Percentage = 100;
+            if (isGuarding)
+                DefenderReduction *= guardEffect;
+            return attackerAd * DefenderReduction / Percentage;
+        }
+        public static float RemainedHp(float currentHp, float receivedDamage)
+        {
+            return receivedDamage>currentHp ? 0 : currentHp-receivedDamage;
+        }
+        public static void InformAction(string attackerName, string defenderName,float inflictedDamage)
+        {
+            const string Msg = "{0} has dealt {1} damage to {2}";
+            Console.WriteLine(Msg, attackerName, inflictedDamage, defenderName);
+        }
+    }
 }

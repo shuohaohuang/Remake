@@ -12,13 +12,20 @@ namespace Utilities
         {
             return (num >= min && num <= max);
         }
-        public static bool Equal(int num, int secondNum)
+
+        public static bool GreaterThan(int number, int compared=0)
         {
-            return num == secondNum;
+
+            return number > compared;
+        }
+        public static bool GreaterThan(float number, float compared = 0)
+        {
+            return number > compared;
         }
 
         public static string NameMayus(string name)
         {
+            name = name.ToLower();
             char[] chars = name.ToCharArray();
             chars[0] = char.ToUpper(chars[0]);
             name = new string(chars);
@@ -28,12 +35,12 @@ namespace Utilities
 
         #region checkers
 
-        public static bool Check(string input, string[] validStrings)
+        public static bool ValidateInput(string input, string[] validStrings)
         {
             bool result = false;
             for (int i = 0; i < validStrings.Length && !result; i++)
             {
-                result = input==validStrings[i];
+                result = input == validStrings[i];
             }
             return result;
         }
