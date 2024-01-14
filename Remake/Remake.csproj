@@ -7,9 +7,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Game\Game.csproj" />
-    <ProjectReference Include="..\Utilities\Utilities.csproj" />
-  </ItemGroup>
-
 </Project>
