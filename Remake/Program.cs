@@ -20,7 +20,7 @@ namespace Remake
                                         "\n\t1.Normal attack" +
                                         "\n\t2. Character's ability" +
                                         "\n\t3. Guard ",
-                        CurrentStatus="{0} : {1} Hp",
+                        CurrentStatus = "{0} : {1} Hp",
                         OnCooldown = "Skill on Cooldown, {0} turns until available ",
                         ErrorMsg = "Wrong insert, try again",
                         RenameMsg = "Do you want rename characters:\n[Y/N]",
@@ -63,7 +63,7 @@ namespace Remake
 
             #region MonsterStats
             string monsterName = "Monster";
-            int monsterCurrentStun=Zero ;
+            int monsterCurrentStun = Zero;
             float monsterHp,
                   monsterAttack,
                   monsterReduction;
@@ -79,7 +79,7 @@ namespace Remake
             #region PorgramVariables
             string userInput;
             string[] twoValidInputs = { OneStr, ZeroStr },
-                     threeValidInputs= { OneStr, TwoStr, ThreeStr },
+                     threeValidInputs = { OneStr, TwoStr, ThreeStr },
                      fourValidInputs = { OneStr, TwoStr, ThreeStr, FourStr },
                      boolValidInputs = { Yes, No };
             int difficulty = Zero,
@@ -87,7 +87,7 @@ namespace Remake
             float inflictedDamage;
             bool inputCheck,
                 isHero = true,
-                hasRemainingAttempts=true;
+                hasRemainingAttempts = true;
 
             #endregion
 
@@ -97,7 +97,7 @@ namespace Remake
             {
                 userInput = Console.ReadLine() ?? "";
                 inputCheck = Utility.ValidateInput(userInput, twoValidInputs);
-                if(!inputCheck)
+                if (!inputCheck)
                     Console.WriteLine(ErrorMsg);
             } while (!inputCheck);
 
@@ -119,7 +119,7 @@ namespace Remake
                     {
                         difficulty = Convert.ToInt32(userInput);
                     }
-                 
+
                 } while (!inputCheck && hasRemainingAttempts);
 
                 Console.WriteLine(RenameMsg);
@@ -136,7 +136,7 @@ namespace Remake
 
                     }
 
-                } while (!inputCheck&& hasRemainingAttempts);
+                } while (!inputCheck && hasRemainingAttempts);
 
                 if (userInput == Yes)
                 {

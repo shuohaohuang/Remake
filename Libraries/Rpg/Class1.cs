@@ -12,7 +12,7 @@ namespace Rpg
         {
             if (Utility.InRange(difficulty, 2))
                 return DefaultLevel(stats, difficulty, isHero);
-            if (Utility.Equals(difficulty, 3))
+            if (difficulty==3)
                 return PersonalizedLevel(stats);
             return RandomLevel(stats);
 
@@ -106,9 +106,9 @@ namespace Rpg
                          RenamedMsg = "{0}'s new name is {1}";
 
             string newName;
-                Console.WriteLine(RequestNameMsg,name);
-                newName = Utility.NameMayus(Console.ReadLine() ?? name);
-                Console.WriteLine(RenamedMsg,name,newName);
+            Console.WriteLine(RequestNameMsg, name);
+            newName = Utility.NameMayus(Console.ReadLine() ?? name);
+            Console.WriteLine(RenamedMsg, name, newName);
             return newName;
         }
 
@@ -119,7 +119,7 @@ namespace Rpg
         {
             const int hpColumn = 0,
                 SettedHpRow = 2;
-            return stats[SettedHpRow , hpColumn];
+            return stats[SettedHpRow, hpColumn];
         }
         public static float Attack(float[,] stats)
         {
@@ -137,23 +137,26 @@ namespace Rpg
     }
     public class Battle
     {
-        public static float CalculateDamage(float attackerAd, float DefenderReduction )
+        public static float CalculateDamage(float attackerAd, float defenderReduction)
         {
+            const int Digits = 2;
             const float Percentage = 100, One = 1;
-            return attackerAd * (One-(DefenderReduction/Percentage));
+
+            return Utility.Round(Math.Abs(attackerAd * (One - (defenderReduction / Percentage))),Digits);
         }
-        public static float CalculateDamage(float attackerAd, float DefenderReduction,float guardEffect, bool isGuarding)
+        public static float CalculateDamage(float attackerAd, float defenderReduction, float guardEffect, bool isGuarding)
         {
-            const int Percentage = 100;
+            const int Digits = 2;
+            const int Percentage = 100, One=1;
             if (isGuarding)
-                DefenderReduction *= guardEffect;
-            return attackerAd * DefenderReduction / Percentage;
+                defenderReduction *= guardEffect;
+            return Utility.Round(Math.Abs(attackerAd * (One - (defenderReduction / Percentage))),Digits);
         }
         public static float RemainedHp(float currentHp, float receivedDamage)
         {
-            return receivedDamage>currentHp ? 0 : currentHp-receivedDamage;
+            return receivedDamage > currentHp ? 0 : currentHp - receivedDamage;
         }
-        public static void InformAction(string attackerName, string defenderName,float inflictedDamage)
+        public static void InformAction(string attackerName, string defenderName, float inflictedDamage)
         {
             const string Msg = "{0} has dealt {1} damage to {2}";
             Console.WriteLine(Msg, attackerName, inflictedDamage, defenderName);

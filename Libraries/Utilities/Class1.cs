@@ -4,6 +4,12 @@ namespace Utilities
 {
     public class Utility
     {
+        public static float Round(float value, int digits)
+        {
+            double result= value;
+            result = Math.Round(result, digits);
+            return (float)result;
+        }
         public static bool InRange(int num, int max)
         {
             return num <= max;
