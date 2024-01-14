@@ -20,14 +20,18 @@ namespace Remake
                                         "\n\t1.Normal attack" +
                                         "\n\t2. Character's ability" +
                                         "\n\t3. Guard ",
+                        DefaultDifficultyMsg = "Default difficulty: Random",
                         CurrentStatus = "{0} : {1} Hp",
+                        Round = "Round {0}",
+                        FailedAttackMsg="{0} has failed the attack",
+                        CriticalAttackMsg= "{0} has executed a critical hit.",
                         OnCooldown = "Skill on Cooldown, {0} turns until available ",
                         ErrorMsg = "Wrong insert, try again",
                         RenameMsg = "Do you want rename characters:\n[Y/N]",
                         Yes = "Y", No = "N";
 
             const string ZeroStr = "0", OneStr = "1", TwoStr = "2", ThreeStr = "3", FourStr = "4";
-            const int Zero = 0, One = 1, Two = 2, Three = 3, SkillCd = 5;
+            const int Zero = 0, One = 1, Two = 2, Three = 3, Four=4, SkillCd = 5, CriticalProbability = 10, FailedAttackProbabilitty = 50;
             const float ArcherMinHp = 1000f, ArcherMinAttack = 200f, ArcherMinReduction = 25f,
                         ArcherMaxHp = 2000f, ArcherMaxAttack = 300f, ArcherMaxReduction = 35f,
                         MonsterMinHp = 7000f, MonsterMinAttack = 300f, MonsterMinReduction = 20f,
@@ -40,7 +44,7 @@ namespace Remake
             string archerName = "Archer";
             int archerAbilityCurrentCD = 0;
             int archerAbilityEffect = 2;
-            float archerHp,
+            float archerCurrentHp,
                   archerAttack,
                   archerReduction;
             float[,] archer = new float[3, 3]
@@ -64,7 +68,7 @@ namespace Remake
             #region MonsterStats
             string monsterName = "Monster";
             int monsterCurrentStun = Zero;
-            float monsterHp,
+            float monsterCurrentHp,
                   monsterAttack,
                   monsterReduction;
             float[,] monster = new float[3, 3]
@@ -82,12 +86,15 @@ namespace Remake
                      threeValidInputs = { OneStr, TwoStr, ThreeStr },
                      fourValidInputs = { OneStr, TwoStr, ThreeStr, FourStr },
                      boolValidInputs = { Yes, No };
-            int difficulty = Zero,
-                attemps = Two;
+            int difficulty = Four,
+                attemps = Three,
+                roundCouter = One;
             float inflictedDamage;
             bool inputCheck,
                 isHero = true,
-                hasRemainingAttempts = true;
+                hasRemainingAttempts = true,
+                criticalAttack,
+                failedAttack;
 
             #endregion
 
@@ -104,26 +111,34 @@ namespace Remake
             if (userInput.Equals(OneStr))
             {
                 Console.WriteLine(DifficultyMenuMsg);
-                attemps = Two;
+                attemps = Three;
                 do
                 {
                     userInput = Console.ReadLine() ?? "";
                     inputCheck = Utility.ValidateInput(userInput, fourValidInputs);
                     if (!inputCheck)
                     {
-                        Console.WriteLine(ErrorMsg);
                         attemps--;
-                        hasRemainingAttempts = Utility.GreaterThan(attemps);
+                        hasRemainingAttempts = Utility.GreaterThan(attemps); 
                     }
                     else
                     {
                         difficulty = Convert.ToInt32(userInput);
                     }
 
+                    if (!hasRemainingAttempts)
+                    {
+                        Console.WriteLine(DefaultDifficultyMsg);
+                    }
+                    else
+                    {
+                        Console.WriteLine(ErrorMsg);
+                    }
+
                 } while (!inputCheck && hasRemainingAttempts);
 
                 Console.WriteLine(RenameMsg);
-                attemps = Two;
+                attemps = Three;
                 do
                 {
                     userInput = Console.ReadLine()?.ToUpper() ?? "";
@@ -133,9 +148,7 @@ namespace Remake
                         Console.WriteLine(ErrorMsg);
                         attemps--;
                         hasRemainingAttempts = Utility.GreaterThan(attemps);
-
                     }
-
                 } while (!inputCheck && hasRemainingAttempts);
 
                 if (userInput == Yes)
@@ -145,26 +158,28 @@ namespace Remake
                 }
 
                 archer = SetStat.StatSetter(archer, difficulty, isHero);
-                archerHp = GetStat.Hp(archer);
+                archerCurrentHp = GetStat.Hp(archer);
                 archerAttack = GetStat.Attack(archer);
                 archerReduction = GetStat.Reduction(archer);
 
                 monster = SetStat.StatSetter(monster, difficulty, !isHero);
-                monsterHp = GetStat.Hp(monster);
+                monsterCurrentHp = GetStat.Hp(monster);
                 monsterAttack = GetStat.Attack(monster);
                 monsterReduction = GetStat.Reduction(monster);
 
 
                 do
                 {
+                    Console.WriteLine(Round, roundCouter);
+                    
 
-                    if (Utility.GreaterThan(GetStat.Hp(archer)))
+                    if (Utility.GreaterThan(archerCurrentHp))
                     {   //Archer Turn
 
                         Console.WriteLine(RequestCommandMsg);
                         userInput = Console.ReadLine() ?? "";
                         inputCheck = Utility.ValidateInput(userInput, fourValidInputs);
-                        attemps = Two;
+                        attemps = Three;
                         do
                         {
                             if (!inputCheck)
@@ -181,15 +196,27 @@ namespace Remake
 
                         if (hasRemainingAttempts)
                         {
-                            attemps = Two;
+                            attemps = Three;
                             do
                             {
                                 switch (userInput)
                                 {
                                     case "1":
-                                        inflictedDamage = Battle.CalculateDamage(archerAttack, monsterReduction);
-                                        Battle.InformAction(archerName, monsterName, inflictedDamage);
-                                        monsterHp = Battle.RemainedHp(monsterHp, inflictedDamage);
+                                        failedAttack = Battle.Probability(FailedAttackProbabilitty);
+                                        if (!failedAttack)
+                                        {
+                                            criticalAttack = Battle.Probability(CriticalProbability);
+                                            if (criticalAttack)
+                                                Console.WriteLine(CriticalAttackMsg,archerName);
+                                            inflictedDamage = Battle.CalculateDamage(archerAttack, monsterReduction, criticalAttack);
+                                            Battle.InformAction(archerName, monsterName, inflictedDamage);
+                                            monsterCurrentHp = Battle.RemainedHp(monsterCurrentHp, inflictedDamage);
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine(FailedAttackMsg, archerName);
+                                        }
+                                        
                                         break;
                                     case "2":
                                         monsterCurrentStun = archerAbilityEffect;
@@ -206,21 +233,32 @@ namespace Remake
 
                     if (!Utility.GreaterThan(monsterCurrentStun))
                     {
-                        inflictedDamage = Battle.CalculateDamage(monsterAttack, archerReduction, GuardEffect, archerDefenseMode);
-                        Battle.InformAction(monsterName, archerName, inflictedDamage);
-                        archerHp = Battle.RemainedHp(monsterHp, inflictedDamage);
+                        failedAttack = Battle.Probability(FailedAttackProbabilitty);
+                        if (!failedAttack)
+                        {
+                            criticalAttack = Battle.Probability(CriticalProbability);
+                            if (criticalAttack)
+                                Console.WriteLine(CriticalAttackMsg, monsterName);
+                            inflictedDamage = Battle.CalculateDamage(monsterAttack, archerReduction, GuardEffect, archerDefenseMode,criticalAttack);
+                            Battle.InformAction(monsterName, archerName, inflictedDamage);
+                            archerCurrentHp = Battle.RemainedHp(archerCurrentHp, inflictedDamage);
+                        }
+                        else
+                        {
+                            Console.WriteLine(FailedAttackMsg, monsterName);
+                        }
+                        
                     }
 
-                    Console.WriteLine(CurrentStatus, archerName, archerHp);
-                    Console.WriteLine(CurrentStatus, monsterName, monsterHp);
+                    Console.WriteLine(CurrentStatus, archerName, archerCurrentHp);
+                    Console.WriteLine(CurrentStatus, monsterName, monsterCurrentHp);
 
                     //End of Round
                     monsterCurrentStun--;
                     archerAbilityCurrentCD--;
 
-
-                } while (Utility.GreaterThan(GetStat.Hp(archer))
-                    && Utility.GreaterThan(GetStat.Hp(monster)));
+                } while ((Utility.GreaterThan(archerCurrentHp))
+                    && Utility.GreaterThan(monsterCurrentHp));
             }
 
         }

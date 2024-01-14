@@ -70,7 +70,7 @@ namespace RpgTest
             float defenderReduction = 20;
             
             //Act
-            float result = Battle.CalculateDamage(attackerAd, defenderReduction);
+            float result = Battle.CalculateDamage(attackerAd, defenderReduction,true);
 
             //Assert
             Assert.AreEqual(80, result);
@@ -83,7 +83,7 @@ namespace RpgTest
             float defenderReduction = 20;
 
             //Act
-            float result = Battle.CalculateDamage(attackerAd, defenderReduction);
+            float result = Battle.CalculateDamage(attackerAd, defenderReduction, true);
 
             //Assert
             Assert.AreEqual(80, result);
@@ -99,7 +99,7 @@ namespace RpgTest
             bool isGuarding = true;
 
             //Act
-            float result = Battle.CalculateDamage(attackerAd, defenderReduction,guardeEffect,isGuarding);
+            float result = Battle.CalculateDamage(attackerAd, defenderReduction,guardeEffect,isGuarding,true);
 
             //Assert
             Assert.AreEqual(60, result);
@@ -114,7 +114,7 @@ namespace RpgTest
             bool isGuarding = false;
 
             //Act
-            float result = Battle.CalculateDamage(attackerAd, defenderReduction, guardEffect, isGuarding);
+            float result = Battle.CalculateDamage(attackerAd, defenderReduction, guardEffect, isGuarding, true);
 
             //Assert
             Assert.AreEqual(6, result);

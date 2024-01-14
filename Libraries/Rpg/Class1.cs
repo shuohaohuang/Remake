@@ -137,20 +137,28 @@ namespace Rpg
     }
     public class Battle
     {
-        public static float CalculateDamage(float attackerAd, float defenderReduction)
+        public static float CalculateDamage(float attackerAd, float defenderReduction , bool criticAttack)
         {
-            const int Digits = 2;
+            const int Digits = 2, CriticalEffect = 2;
             const float Percentage = 100, One = 1;
+
+            if (criticAttack)
+                return Math.Abs(attackerAd * (One - (defenderReduction / Percentage)) * CriticalEffect);
 
             return Utility.Round(Math.Abs(attackerAd * (One - (defenderReduction / Percentage))),Digits);
         }
-        public static float CalculateDamage(float attackerAd, float defenderReduction, float guardEffect, bool isGuarding)
+        public static float CalculateDamage(float attackerAd, float defenderReduction, float guardEffect, bool isGuarding, bool criticAttack)
         {
-            const int Digits = 2;
-            const int Percentage = 100, One=1;
+            const int Digits = 2, CriticalEffect = 2;
+            const float Percentage = 100, One=1;
+
             if (isGuarding)
                 defenderReduction *= guardEffect;
-            return Utility.Round(Math.Abs(attackerAd * (One - (defenderReduction / Percentage))),Digits);
+
+            if (criticAttack)
+                return Math.Abs(attackerAd * (One - (defenderReduction / Percentage))*CriticalEffect);
+
+            return Math.Abs(attackerAd * (One - (defenderReduction / Percentage)));
         }
         public static float RemainedHp(float currentHp, float receivedDamage)
         {
@@ -160,6 +168,15 @@ namespace Rpg
         {
             const string Msg = "{0} has dealt {1} damage to {2}";
             Console.WriteLine(Msg, attackerName, inflictedDamage, defenderName);
+        }
+        
+        public static bool Probability(float probability)
+        {
+            const int MaxProbability=100;
+            Random random=new();
+
+            return Utility.InRange(random.Next(MaxProbability),probability);
+
         }
     }
 }
