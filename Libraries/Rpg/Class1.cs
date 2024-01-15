@@ -1,5 +1,6 @@
 ﻿using System;
 using Utilities;
+using RpgConstants;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Rpg
@@ -12,8 +13,6 @@ namespace Rpg
         {
             if (Utility.InRange(difficulty, 2))
                 return DefaultLevel(stats, difficulty, isHero);
-            if (difficulty==3)
-                return PersonalizedLevel(stats);
             return RandomLevel(stats);
 
         }
@@ -41,18 +40,13 @@ namespace Rpg
 
         public static float[,] PersonalizedLevel(float[,] stats)
         {
-            const string Hp = "Hit Points: ",
-                Attack = "Attack: ",
-                DmgReduccion = "Damage  Reduction: ",
-                RangedIn = "In range [{0}-{1}]",
-                InsertRequest = "Insert stat value";
             const int RowToSet = 2,
                 MinValueRow = 0,
                 MaxValueRow = 1,
                 MaxAttemps = 3,
                 DefaultAttemps = 1;
 
-            string[] StatsRequirement = { Hp + RangedIn, Attack + RangedIn, DmgReduccion + RangedIn };
+            string[] StatsRequirement = [RpgConstant.HpMenuMsg + RpgConstant.RangedInMsg, RpgConstant.AttackMenuMsg + RpgConstant.RangedInMsg, RpgConstant.DmgReduccionMenuMsg + RpgConstant.RangedInMsg];
 
             for (int i = 0; i < stats.GetLength(1); i++)
             {
