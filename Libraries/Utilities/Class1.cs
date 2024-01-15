@@ -6,28 +6,31 @@ namespace Utilities
     {
         public static float Round(float value, int digits)
         {
-            double result= value;
+            double result = value;
             result = Math.Round(result, digits);
             return (float)result;
         }
+
         public static bool InRange(int num, int max)
         {
             return num <= max;
         }
+
         public static bool InRange(int num, float max)
         {
             return num <= max;
         }
+
         public static bool InRange(float num, float min, float max)
         {
             return (num >= min && num <= max);
         }
 
-        public static bool GreaterThan(int number, int compared=0)
+        public static bool GreaterThan(int number, int compared = 0)
         {
-
             return number > compared;
         }
+
         public static bool GreaterThan(float number, float compared = 0)
         {
             return number > compared;
@@ -41,7 +44,6 @@ namespace Utilities
             name = new string(chars);
             return name;
         }
-
 
         #region checkers
 
@@ -57,8 +59,6 @@ namespace Utilities
         #endregion
     }
 
-
-
     /*
     /// <summary>
     /// Este método realiza alguna operación con los parámetros dados.
@@ -72,5 +72,4 @@ namespace Utilities
         return resultado;
     }
     */
-
 }

@@ -1,23 +1,20 @@
 ﻿using System;
-using Utilities;
 using RpgConstants;
+using Utilities;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Rpg
-
 {
     public class SetStat
     {
-
         public static float[,] StatSetter(float[,] stats, int difficulty, bool isHero)
         {
             if (Utility.InRange(difficulty, 2))
                 return DefaultLevel(stats, difficulty, isHero);
             return RandomLevel(stats);
-
         }
 
-        public static float[,] DefaultLevel(float[,] stats, int difficulty, bool isHero)//Difficult
+        public static float[,] DefaultLevel(float[,] stats, int difficulty, bool isHero) //Difficult
         {
             const int RowToSet = 2;
             int rowToPick;
@@ -46,7 +43,12 @@ namespace Rpg
                 MaxAttemps = 3,
                 DefaultAttemps = 1;
 
-            string[] StatsRequirement = [RpgConstant.HpMenuMsg + RpgConstant.RangedInMsg, RpgConstant.AttackMenuMsg + RpgConstant.RangedInMsg, RpgConstant.DmgReduccionMenuMsg + RpgConstant.RangedInMsg];
+            string[] StatsRequirement =
+            [
+                RpgConstant.HpMenuMsg + RpgConstant.RangedInMsg,
+                RpgConstant.AttackMenuMsg + RpgConstant.RangedInMsg,
+                RpgConstant.DmgReduccionMenuMsg + RpgConstant.RangedInMsg
+            ];
 
             for (int i = 0; i < stats.GetLength(1); i++)
             {
@@ -55,11 +57,18 @@ namespace Rpg
                 bool inRange;
                 do
                 {
-                    Console.WriteLine($"{InsertRequest}\n {StatsRequirement[i]}",
-                                     stats[MinValueRow, i], stats[MaxValueRow, i]);
+                    Console.WriteLine(
+                        $"{RpgConstant.InsertRequestMsg}\n {StatsRequirement[i]}",
+                        stats[MinValueRow, i],
+                        stats[MaxValueRow, i]
+                    );
 
                     userInsert = Convert.ToSingle(Console.ReadLine());
-                    inRange = Utility.InRange(userInsert, stats[MinValueRow, i], stats[MaxValueRow, i]);
+                    inRange = Utility.InRange(
+                        userInsert,
+                        stats[MinValueRow, i],
+                        stats[MaxValueRow, i]
+                    );
 
                     if (!inRange)
                     {
@@ -71,7 +80,6 @@ namespace Rpg
                     {
                         stats[RowToSet, i] = userInsert;
                     }
-
                 } while (!inRange && Utility.InRange(attemps, MaxAttemps));
             }
             return stats;
@@ -94,10 +102,11 @@ namespace Rpg
             }
             return stats;
         }
-        public static string Rename(string name)//
+
+        public static string Rename(string name) //
         {
             const string RequestNameMsg = "Insert {0}'s new name is ",
-                         RenamedMsg = "{0}'s new name is {1}";
+                RenamedMsg = "{0}'s new name is {1}";
 
             string newName;
             Console.WriteLine(RequestNameMsg, name);
@@ -105,8 +114,8 @@ namespace Rpg
             Console.WriteLine(RenamedMsg, name, newName);
             return newName;
         }
-
     }
+
     public class GetStat
     {
         public static float Hp(float[,] stats)
@@ -115,62 +124,90 @@ namespace Rpg
                 SettedHpRow = 2;
             return stats[SettedHpRow, hpColumn];
         }
+
         public static float Attack(float[,] stats)
         {
             const int attackColumn = 1,
                 SettedAttackRow = 2;
             return stats[SettedAttackRow, attackColumn];
         }
+
         public static float Reduction(float[,] stats)
         {
             const int reductionColumn = 2,
                 SettedReductionRow = 2;
             return stats[SettedReductionRow, reductionColumn];
         }
-
     }
+
     public class Battle
     {
-        public static float CalculateDamage(float attackerAd, float defenderReduction , bool criticAttack)
+        public static float CalculateDamage(
+            float attackerAd,
+            float defenderReduction,
+            bool criticAttack
+        )
         {
-            const int Digits = 2, CriticalEffect = 2;
-            const float Percentage = 100, One = 1;
+            const int Digits = 2,
+                CriticalEffect = 2;
+            const float Percentage = 100,
+                One = 1;
 
             if (criticAttack)
-                return Math.Abs(attackerAd * (One - (defenderReduction / Percentage)) * CriticalEffect);
+                return Math.Abs(
+                    attackerAd * (One - (defenderReduction / Percentage)) * CriticalEffect
+                );
 
-            return Utility.Round(Math.Abs(attackerAd * (One - (defenderReduction / Percentage))),Digits);
+            return Utility.Round(
+                Math.Abs(attackerAd * (One - (defenderReduction / Percentage))),
+                Digits
+            );
         }
-        public static float CalculateDamage(float attackerAd, float defenderReduction, float guardEffect, bool isGuarding, bool criticAttack)
+
+        public static float CalculateDamage(
+            float attackerAd,
+            float defenderReduction,
+            float guardEffect,
+            bool isGuarding,
+            bool criticAttack
+        )
         {
-            const int Digits = 2, CriticalEffect = 2;
-            const float Percentage = 100, One=1;
+            const int CriticalEffect = 2;
+            const float Percentage = 100,
+                One = 1;
 
             if (isGuarding)
                 defenderReduction *= guardEffect;
 
             if (criticAttack)
-                return Math.Abs(attackerAd * (One - (defenderReduction / Percentage))*CriticalEffect);
+                return Math.Abs(
+                    attackerAd * (One - (defenderReduction / Percentage)) * CriticalEffect
+                );
 
             return Math.Abs(attackerAd * (One - (defenderReduction / Percentage)));
         }
+
         public static float RemainedHp(float currentHp, float receivedDamage)
         {
             return receivedDamage > currentHp ? 0 : currentHp - receivedDamage;
         }
-        public static void InformAction(string attackerName, string defenderName, float inflictedDamage)
+
+        public static void InformAction(
+            string attackerName,
+            string defenderName,
+            float inflictedDamage
+        )
         {
             const string Msg = "{0} has dealt {1} damage to {2}";
             Console.WriteLine(Msg, attackerName, inflictedDamage, defenderName);
         }
-        
+
         public static bool Probability(float probability)
         {
-            const int MaxProbability=100;
-            Random random=new();
+            const int MaxProbability = 100;
+            Random random = new();
 
-            return Utility.InRange(random.Next(MaxProbability),probability);
-
+            return Utility.InRange(random.Next(MaxProbability), probability);
         }
     }
 }
