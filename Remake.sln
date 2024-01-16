@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameRemake", "Remake\GameRemake.csproj", "{62821A5B-79ED-4D70-A84D-ECBF4AC06D02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameRemake", "GameRemake\GameRemake.csproj", "{62821A5B-79ED-4D70-A84D-ECBF4AC06D02}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameMethods", "Libraries\Rpg\GameMethods.csproj", "{A31B6800-C815-4917-8792-25F297A653F5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameMethods", "Libraries\GameMethods\GameMethods.csproj", "{A31B6800-C815-4917-8792-25F297A653F5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities", "Libraries\Utilities\Utilities.csproj", "{E6551D66-C040-4C87-AE28-11D04BC93BD4}"
 EndProject
@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RpgTest", "UnitTests\RpgTes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UtilitiesTests", "UnitTests\UtilitiesTests\UtilitiesTests.csproj", "{3CB2E995-787D-4F7A-BD45-1078FB9E98BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgConstants", "Constants\RpgConstants.csproj", "{FC6368B9-4A2D-476F-9061-A0CFF0056842}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameConstants", "Libraries\Constants\GameConstants.csproj", "{FC6368B9-4A2D-476F-9061-A0CFF0056842}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkers", "Checkers\Checkers.csproj", "{1A622F51-8FAA-43DA-BBCE-1CA80BF2288B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Checkers", "Libraries\Checkers\Checkers.csproj", "{1A622F51-8FAA-43DA-BBCE-1CA80BF2288B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
