@@ -8,7 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-
+    <ProjectReference Include="..\Libraries\Checkers\Checkers.csproj" />
+    <ProjectReference Include="..\Libraries\Constants\GameConstants.csproj" />
+    <ProjectReference Include="..\Libraries\GameMethods\GameMethods.csproj" />
+    <ProjectReference Include="..\Libraries\Utilities\Utilities.csproj" />
   </ItemGroup>
 
 </Project>
