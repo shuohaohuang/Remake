@@ -1,4 +1,4 @@
-using Rpg;
+using GameMethods;
 namespace RpgTest
 {
     [TestClass]
@@ -26,7 +26,7 @@ namespace RpgTest
             bool isShero = true;
 
             //Act
-            float[,] result = SetStat.StatSetter(archer, difficulty, isShero);
+            float[,] result = Stats.Setter(archer, difficulty, isShero);
 
             //Assert
             CollectionAssert.AreEqual(expected, archer);
@@ -55,7 +55,7 @@ namespace RpgTest
             bool isShero = false;
 
             //Act
-            float[,] result = SetStat.StatSetter(archer, difficulty, isShero);
+            float[,] result = Stats.Setter(archer, difficulty, isShero);
 
             //Assert
             CollectionAssert.AreEqual(expected, archer);

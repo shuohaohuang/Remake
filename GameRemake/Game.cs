@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Xml.Linq;
 using Checkers;
 using GameConstants;
-using Rpg;
+using GameMethods;
 using Utilities;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -22,14 +23,14 @@ namespace Remake
             float[,] archer = new float[3, 3]
             {
                 {
-                    GameConstant.ArcherMinHp,
-                    GameConstant.ArcherMinAttack,
-                    GameConstant.ArcherMinReduction
+                    GameConstant.ArcherLimitMinHp,
+                    GameConstant.ArcherLimitMinAttack,
+                    GameConstant.ArcherLimitMinReduction
                 },
                 {
-                    GameConstant.ArcherMaxHp,
-                    GameConstant.ArcherMaxAttack,
-                    GameConstant.ArcherMaxReduction
+                    GameConstant.ArcherLimitMaxHp,
+                    GameConstant.ArcherLimitMaxAttack,
+                    GameConstant.ArcherLimitMaxReduction
                 },
                 { 0, 0, 0 }
             }; /*Matrix 3X3: 
@@ -54,14 +55,14 @@ namespace Remake
             float[,] monster = new float[3, 3]
             {
                 {
-                    GameConstant.MonsterMinHp,
-                    GameConstant.MonsterMinAttack,
-                    GameConstant.MonsterMinReduction
+                    GameConstant.MonsterLimitMinHp,
+                    GameConstant.MonsterLimitMinAttack,
+                    GameConstant.MonsterLimitMinReduction
                 },
                 {
-                    GameConstant.MonsterMaxHp,
-                    GameConstant.MonsterMaxAttack,
-                    GameConstant.MonsterMaxReduction
+                    GameConstant.MonsterLimitMaxHp,
+                    GameConstant.MonsterLimitMaxAttack,
+                    GameConstant.MonsterLimitMaxReduction
                 },
                 { GameConstant.Zero, GameConstant.Zero, GameConstant.Zero }
             };
@@ -69,7 +70,9 @@ namespace Remake
 
 
             #region PorgramVariables
-            string userCommand;
+            string userCommand,
+                   oldName = archerName;
+
             string[] twoValidInputs = [GameConstant.OneStr, GameConstant.ZeroStr],
                 threeValidInputs =
                     [GameConstant.OneStr, GameConstant.TwoStr, GameConstant.ThreeStr],
@@ -86,7 +89,7 @@ namespace Remake
                     [
                         GameConstant.HpMenuMsg + GameConstant.RangedInMsg,
                         GameConstant.AttackMenuMsg + GameConstant.RangedInMsg,
-                        GameConstant.DmgReduccionMenuMsg + GameConstant.RangedInMsg
+                        GameConstant.DmgReductionMenuMsg + GameConstant.RangedInMsg
                     ],
                 boolValidInputs = [GameConstant.Yes, GameConstant.No];
             int difficulty = GameConstant.Four,
@@ -178,8 +181,15 @@ namespace Remake
 
                 if (Check.Equals(userCommand, GameConstant.Yes))
                 {
-                    archerName = Stats.Rename(archerName);
-                    monsterName = Stats.Rename(monsterName);
+                    Console.WriteLine(GameConstant.RequestNameMsg, archerName);
+                    archerName = Utility.NameMayus(Console.ReadLine() ?? archerName);
+                    Console.WriteLine(GameConstant.RenamedMsg, oldName, archerName);
+
+                    oldName = monsterName;
+                    Console.WriteLine(GameConstant.RequestNameMsg, monsterName);
+                    monsterName = Utility.NameMayus(Console.ReadLine() ?? monsterName);
+                    Console.WriteLine(GameConstant.RenamedMsg, oldName, monsterName);
+
                 }
                 // Starter Stats Setter
                 if (Check.InRange(difficulty, GameConstant.Three))
@@ -276,13 +286,13 @@ namespace Remake
                     }
                 }
 
-                archerCurrentHp = Stats.GetHp(archer);
-                archerAttack = Stats.GetAttack(archer);
-                archerReduction = Stats.GetReduction(archer);
+                archerCurrentHp = Stats.GetMaxHp(archer);
+                archerAttack = Stats.GetMaxAttack(archer);
+                archerReduction = Stats.GetMaxReduction(archer);
 
-                monsterCurrentHp = Stats.GetHp(monster);
-                monsterAttack = Stats.GetAttack(monster);
-                monsterReduction = Stats.GetReduction(monster);
+                monsterCurrentHp = Stats.GetMaxHp(monster);
+                monsterAttack = Stats.GetMaxAttack(monster);
+                monsterReduction = Stats.GetMaxReduction(monster);
 
                 if (hasRemainingAttemptsMenu)
                 {
@@ -336,7 +346,7 @@ namespace Remake
                                     {
                                         case "1":
                                             failedAttack = Battle.Probability(
-                                                GameConstant.FailedAttackProbabilitty
+                                                GameConstant.FailedAttackProbability
                                             );
                                             if (!failedAttack)
                                             {
@@ -388,7 +398,7 @@ namespace Remake
                                 remainingAttempts = GameConstant.MaxAttempts;
 
                                 failedAttack = Battle.Probability(
-                                                GameConstant.FailedAttackProbabilitty
+                                                GameConstant.FailedAttackProbability
                                             );
                                 if (!failedAttack)
                                 {
@@ -430,7 +440,7 @@ namespace Remake
                         if (!Check.GreaterThan(monsterCurrentStun))
                         {
                             failedAttack = Battle.Probability(
-                                GameConstant.FailedAttackProbabilitty
+                                GameConstant.FailedAttackProbability
                             );
                             if (!failedAttack)
                             {
