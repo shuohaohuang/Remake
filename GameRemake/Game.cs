@@ -14,25 +14,26 @@ namespace Remake
         {
             #region archerStats
             //sample
-            string archerName = "Archer";
-            int archerAbilityCurrentCD = 0;
-            int archerAbilityEffect = 2;
-            float archerCurrentHp,
-                archerAttack,
-                archerReduction;
-            float[,] archer = new float[3, 3]
+            string archerName = GameConstant.ArcherName;
+            int archerAbilityCurrentCD = GameConstant.Zero;
+            int archerAbilityEffect = GameConstant.Two;
+            float archerCurrentHp = GameConstant.Zero,
+                archerCurrentAttack = GameConstant.Zero,
+                archerCurrentReduction = GameConstant.Zero;
+            float[,] archer = new float[4, 3]
             {
                 {
-                    GameConstant.ArcherLimitMinHp,
-                    GameConstant.ArcherLimitMinAttack,
-                    GameConstant.ArcherLimitMinReduction
+                    GameConstant.ArcherSystemLimitMinHp,
+                    GameConstant.ArcherSystemLimitMinAttack,
+                    GameConstant.ArcherSystemLimitMinReduction
                 },
                 {
-                    GameConstant.ArcherLimitMaxHp,
-                    GameConstant.ArcherLimitMaxAttack,
-                    GameConstant.ArcherLimitMaxReduction
+                    GameConstant.ArcherSystemLimitMaxHp,
+                    GameConstant.ArcherSystemLimitMaxAttack,
+                    GameConstant.ArcherSystemLimitMaxReduction
                 },
-                { 0, 0, 0 }
+                { GameConstant.Zero, GameConstant.Zero, GameConstant.Zero },
+                { archerCurrentHp, archerCurrentAttack, archerCurrentReduction }
             }; /*Matrix 3X3: 
                *1st row for min values
                *2nd roe for max values
@@ -47,31 +48,32 @@ namespace Remake
             #endregion
 
             #region MonsterStats
-            string monsterName = "Monster";
-            int monsterCurrentStun = GameConstant.Zero;
-            float monsterCurrentHp,
-                monsterAttack,
-                monsterReduction;
-            float[,] monster = new float[3, 3]
+            string monsterName = GameConstant.MonsterName;
+            int monsterRemainingStunnedTurn = GameConstant.Zero;
+            float monsterCurrentHp = GameConstant.Zero,
+                monsterCurrentAttack = GameConstant.Zero,
+                monsterCurrentReduction = GameConstant.Zero;
+            float[,] monster = new float[4, 3]
             {
                 {
-                    GameConstant.MonsterLimitMinHp,
-                    GameConstant.MonsterLimitMinAttack,
-                    GameConstant.MonsterLimitMinReduction
+                    GameConstant.MonsterSystemLimitMinHp,
+                    GameConstant.MonsterSystemLimitMinAttack,
+                    GameConstant.MonsterSystemLimitMinReduction
                 },
                 {
-                    GameConstant.MonsterLimitMaxHp,
-                    GameConstant.MonsterLimitMaxAttack,
-                    GameConstant.MonsterLimitMaxReduction
+                    GameConstant.MonsterSystemLimitMaxHp,
+                    GameConstant.MonsterSystemLimitMaxAttack,
+                    GameConstant.MonsterSystemLimitMaxReduction
                 },
-                { GameConstant.Zero, GameConstant.Zero, GameConstant.Zero }
+                { GameConstant.Zero, GameConstant.Zero, GameConstant.Zero },
+                { monsterCurrentHp, monsterCurrentAttack, monsterCurrentReduction },
             };
             #endregion
 
 
             #region PorgramVariables
             string userCommand,
-                   oldName = archerName;
+                oldName = archerName;
 
             string[] twoValidInputs = [GameConstant.OneStr, GameConstant.ZeroStr],
                 threeValidInputs =
@@ -92,17 +94,14 @@ namespace Remake
                         GameConstant.DmgReductionMenuMsg + GameConstant.RangedInMsg
                     ],
                 boolValidInputs = [GameConstant.Yes, GameConstant.No];
-            int difficulty = GameConstant.Four,
+            int difficulty = GameConstant.Two,
                 remainingAttempts = GameConstant.MaxAttempts,
                 roundCouter = GameConstant.One;
-            float inflictedDamage,
-                userInsertedStatsValue;
+            float userInsertedStatsValue;
             bool validInput,
                 isHero = true,
                 hasRemainingAttemptsMenu = true,
-                hasRemainingAttempts = true,
-                criticalAttack,
-                failedAttack;
+                hasRemainingAttempts = true;
 
             #endregion
 
@@ -141,13 +140,11 @@ namespace Remake
 
                     if (!validInput)
                     {
-                        remainingAttempts--;
-                        hasRemainingAttemptsMenu = Check.GreaterThan(remainingAttempts);
-                        Console.WriteLine(
-                            hasRemainingAttemptsMenu
-                                ? GameConstant.ErrorMsg
-                                : GameConstant.DefaultDifficultyMsg
-                        );
+                        Msg.ErrorCommand(
+                                ref hasRemainingAttemptsMenu,
+                                ref remainingAttempts,
+                                GameConstant.ErrorEndMsg
+                            );
                     }
                     else
                     {
@@ -157,27 +154,28 @@ namespace Remake
                     }
                 } while (!validInput && hasRemainingAttemptsMenu);
 
-                Console.WriteLine(GameConstant.RenameMsg);
-                do
+                if (hasRemainingAttemptsMenu)
                 {
-                    userCommand = Console.ReadLine() ?? "";
-                    validInput = Check.ValidateInput(userCommand, boolValidInputs);
-                    if (!validInput)
+                    Console.WriteLine(GameConstant.RenameMsg);
+                    do
                     {
-                        remainingAttempts--;
-                        hasRemainingAttemptsMenu = Check.GreaterThan(remainingAttempts);
-                        Console.WriteLine(
-                            hasRemainingAttemptsMenu
-                                ? GameConstant.ErrorMsg
-                                : GameConstant.DefaultDifficultyMsg
-                        );
-                    }
-                    else
-                    {
-                        remainingAttempts = GameConstant.MaxAttempts;
-                        hasRemainingAttemptsMenu = Check.GreaterThan(remainingAttempts);
-                    }
-                } while (!validInput && hasRemainingAttemptsMenu);
+                        userCommand = Console.ReadLine() ?? "";
+                        validInput = Check.ValidateInput(userCommand, boolValidInputs);
+                        if (!validInput)
+                        {
+                            Msg.ErrorCommand(
+                                ref hasRemainingAttemptsMenu,
+                                ref remainingAttempts,
+                                GameConstant.DefaultDifficultyMsg
+                            );
+                        }
+                        else
+                        {
+                            remainingAttempts = GameConstant.MaxAttempts;
+                            hasRemainingAttemptsMenu = Check.GreaterThan(remainingAttempts);
+                        }
+                    } while (!validInput && hasRemainingAttemptsMenu);
+                }
 
                 if (Check.Equals(userCommand, GameConstant.Yes))
                 {
@@ -189,13 +187,13 @@ namespace Remake
                     Console.WriteLine(GameConstant.RequestNameMsg, monsterName);
                     monsterName = Utility.NameMayus(Console.ReadLine() ?? monsterName);
                     Console.WriteLine(GameConstant.RenamedMsg, oldName, monsterName);
-
                 }
-                // Starter Stats Setter
+
+                // Starter Stats SetMax
                 if (Check.InRange(difficulty, GameConstant.Three))
                 {
-                    archer = Stats.Setter(archer, difficulty, isHero);
-                    monster = Stats.Setter(monster, difficulty, !isHero);
+                    Stats.SetPlayerCap(archer, difficulty, isHero);
+                    Stats.SetPlayerCap(monster, difficulty, !isHero);
                 }
                 else
                 {
@@ -227,8 +225,8 @@ namespace Remake
                                 }
                                 else
                                 {
-                                    Console.WriteLine(GameConstant.DefaultStatsMsg);
-                                    archer[GameConstant.RowToSet, i] = archer[
+                                    Console.WriteLine(GameConstant.DefaultHeroStatsMsg);
+                                    archer[GameConstant.RowToSetMaxValues, i] = archer[
                                         GameConstant.MinValueRow,
                                         i
                                     ];
@@ -237,8 +235,8 @@ namespace Remake
                             else
                             {
                                 remainingAttempts = GameConstant.MaxAttempts;
-                                hasRemainingAttemptsMenu = Check.GreaterThan(remainingAttempts);
-                                archer[GameConstant.RowToSet, i] = userInsertedStatsValue;
+                                hasRemainingAttempts = Check.GreaterThan(remainingAttempts);
+                                archer[GameConstant.RowToSetMaxValues, i] = userInsertedStatsValue;
                             }
                         } while (!validInput && hasRemainingAttempts);
                     }
@@ -259,6 +257,7 @@ namespace Remake
                                 monster[GameConstant.MinValueRow, i],
                                 monster[GameConstant.MaxValueRow, i]
                             );
+
                             if (!validInput)
                             {
                                 remainingAttempts--;
@@ -270,9 +269,9 @@ namespace Remake
                                 }
                                 else
                                 {
-                                    Console.WriteLine(GameConstant.DefaultStatsMsg);
-                                    monster[GameConstant.RowToSet, i] = monster[
-                                        GameConstant.MinValueRow,
+                                    Console.WriteLine(GameConstant.DefaultMonsterStatsMsg);
+                                    monster[GameConstant.RowToSetMaxValues, i] = monster[
+                                        GameConstant.MaxValueRow,
                                         i
                                     ];
                                 }
@@ -280,62 +279,50 @@ namespace Remake
                             else
                             {
                                 remainingAttempts = GameConstant.MaxAttempts;
-                                monster[GameConstant.RowToSet, i] = userInsertedStatsValue;
+                                monster[GameConstant.RowToSetMaxValues, i] = userInsertedStatsValue;
                             }
                         } while (!validInput && hasRemainingAttempts);
                     }
                 }
-
-                archerCurrentHp = Stats.GetMaxHp(archer);
-                archerAttack = Stats.GetMaxAttack(archer);
-                archerReduction = Stats.GetMaxReduction(archer);
-
-                monsterCurrentHp = Stats.GetMaxHp(monster);
-                monsterAttack = Stats.GetMaxAttack(monster);
-                monsterReduction = Stats.GetMaxReduction(monster);
+                
 
                 if (hasRemainingAttemptsMenu)
                 {
+                    Stats.InGame(archer);
+                    Stats.InGame(monster);
                     while (
-                        Check.GreaterThan(archerCurrentHp) && Check.GreaterThan(monsterCurrentHp)
+                        Check.GreaterThan(Stats.GetCurrentHp(archer))
+                        && Check.GreaterThan(Stats.GetCurrentHp(monster))
                     )
                     {
                         Console.WriteLine(GameConstant.Round, roundCouter);
 
-                        if (Check.GreaterThan(archerCurrentHp))
+                        if (Check.GreaterThan(Stats.GetCurrentHp(archer)))
                         { //Archer Turn
-                            Console.WriteLine(GameConstant.RequestCommandMsg);
+                            Console.WriteLine(GameConstant.RequestCommandMsg, archerName);
 
                             do
                             {
                                 userCommand = Console.ReadLine() ?? "";
                                 validInput = Check.ValidateInput(userCommand, threeValidInputs);
                                 if (!validInput)
-                                {
-                                    remainingAttempts--;
-                                    hasRemainingAttempts = Check.GreaterThan(remainingAttempts);
-                                    Console.WriteLine(
-                                        hasRemainingAttempts
-                                            ? GameConstant.ErrorMsg
-                                            : GameConstant.DefaultCommandMsg
+                                    Msg.ErrorCommand(
+                                        ref hasRemainingAttempts,
+                                        ref remainingAttempts,
+                                        GameConstant.DefaultCommandMsg
                                     );
-                                }
-                                else
-                                {
-                                    remainingAttempts = GameConstant.MaxAttempts;
-                                }
 
                                 if (
                                     userCommand.Equals(GameConstant.TwoStr)
                                     && Check.GreaterThan(archerAbilityCurrentCD)
                                 )
                                 {
-                                    Console.WriteLine(
-                                        GameConstant.OnCooldown,
-                                        archerAbilityCurrentCD
-                                    );
+                                    Battle.NoticeOnCoolDown(archerAbilityCurrentCD);
+                                    validInput = !validInput;
                                 }
                             } while (!validInput && hasRemainingAttempts);
+
+                            remainingAttempts = GameConstant.MaxAttempts;
 
                             if (hasRemainingAttempts)
                             {
@@ -345,45 +332,10 @@ namespace Remake
                                     switch (userCommand)
                                     {
                                         case "1":
-                                            failedAttack = Battle.Probability(
-                                                GameConstant.FailedAttackProbability
-                                            );
-                                            if (!failedAttack)
-                                            {
-                                                criticalAttack = Battle.Probability(
-                                                    GameConstant.CriticalProbability
-                                                );
-                                                if (criticalAttack)
-                                                    Console.WriteLine(
-                                                        GameConstant.CriticalAttackMsg,
-                                                        archerName
-                                                    );
-                                                inflictedDamage = Battle.CalculateDamage(
-                                                    archerAttack,
-                                                    monsterReduction,
-                                                    criticalAttack
-                                                );
-                                                Battle.InformAction(
-                                                    archerName,
-                                                    monsterName,
-                                                    inflictedDamage
-                                                );
-                                                monsterCurrentHp = Battle.RemainedHp(
-                                                    monsterCurrentHp,
-                                                    inflictedDamage
-                                                );
-                                            }
-                                            else
-                                            {
-                                                Console.WriteLine(
-                                                    GameConstant.FailedAttackMsg,
-                                                    archerName
-                                                );
-                                            }
-
+                                            Battle.Attack(archer, monster, archerName, monsterName);
                                             break;
                                         case "2":
-                                            monsterCurrentStun = archerAbilityEffect;
+                                            monsterRemainingStunnedTurn = archerAbilityEffect;
                                             archerAbilityCurrentCD = GameConstant.SkillCd;
                                             break;
                                         default:
@@ -397,87 +349,40 @@ namespace Remake
                                 hasRemainingAttempts = !hasRemainingAttempts;
                                 remainingAttempts = GameConstant.MaxAttempts;
 
-                                failedAttack = Battle.Probability(
-                                                GameConstant.FailedAttackProbability
-                                            );
-                                if (!failedAttack)
-                                {
-                                    criticalAttack = Battle.Probability(
-                                        GameConstant.CriticalProbability
-                                    );
-                                    if (criticalAttack)
-                                        Console.WriteLine(
-                                            GameConstant.CriticalAttackMsg,
-                                            archerName
-                                        );
-                                    inflictedDamage = Battle.CalculateDamage(
-                                        archerAttack,
-                                        monsterReduction,
-                                        criticalAttack
-                                    );
-                                    Battle.InformAction(
-                                        archerName,
-                                        monsterName,
-                                        inflictedDamage
-                                    );
-                                    monsterCurrentHp = Battle.RemainedHp(
-                                        monsterCurrentHp,
-                                        inflictedDamage
-                                    );
-                                }
-                                else
-                                {
-                                    Console.WriteLine(
-                                        GameConstant.FailedAttackMsg,
-                                        archerName
-                                    );
-                                }
+                                Battle.Attack(archer, monster, archerName, monsterName);
                             }
-
-                            
                         }
 
-                        if (!Check.GreaterThan(monsterCurrentStun))
+                        if (
+                            !Check.GreaterThan(monsterRemainingStunnedTurn)
+                            && Check.GreaterThan(Stats.GetCurrentHp(monster))
+                        )
                         {
-                            failedAttack = Battle.Probability(
-                                GameConstant.FailedAttackProbability
+                            Battle.Attack(
+                                monster,
+                                archer,
+                                monsterName,
+                                archerName,
+                                archerDefenseMode
                             );
-                            if (!failedAttack)
-                            {
-                                criticalAttack = Battle.Probability(
-                                    GameConstant.CriticalProbability
-                                );
-                                if (criticalAttack)
-                                    Console.WriteLine(GameConstant.CriticalAttackMsg, monsterName);
-                                inflictedDamage = Battle.CalculateDamage(
-                                    monsterAttack,
-                                    archerReduction,
-                                    GameConstant.GuardEffect,
-                                    archerDefenseMode,
-                                    criticalAttack
-                                );
-                                Battle.InformAction(monsterName, archerName, inflictedDamage);
-                                archerCurrentHp = Battle.RemainedHp(
-                                    archerCurrentHp,
-                                    inflictedDamage
-                                );
-                            }
-                            else
-                            {
-                                Console.WriteLine(GameConstant.FailedAttackMsg, monsterName);
-                            }
                         }
 
-                        Console.WriteLine(GameConstant.CurrentStatus, archerName, archerCurrentHp);
+                        Console.WriteLine(
+                            GameConstant.CurrentStatus,
+                            archerName,
+                            Stats.GetCurrentHp(archer)
+                        );
                         Console.WriteLine(
                             GameConstant.CurrentStatus,
                             monsterName,
-                            monsterCurrentHp
+                            Stats.GetCurrentHp(monster)
                         );
 
                         //End of Round
-                        monsterCurrentStun--;
+                        monsterRemainingStunnedTurn--;
                         archerAbilityCurrentCD--;
+                        archerDefenseMode = !archerDefenseMode;
+                        roundCouter++;
                     }
                 }
             }

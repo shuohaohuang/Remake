@@ -1,6 +1,6 @@
 ﻿using System;
-using GameConstants;
 using Checkers;
+using GameConstants;
 using Utilities;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -8,84 +8,158 @@ namespace GameMethods
 {
     public class Stats
     {
-        public static float[,] Setter(float[,] stats, int difficulty, bool isHero)
+        public static void SetPlayerCap(float[,] CharacterStats, int difficulty, bool isHero)
         {
             if (Check.InRange(difficulty, GameConstant.Two))
-                return DefaultLevel(stats, difficulty, isHero);
-            return RandomLevel(stats);
+            {
+                DefaultLevel(CharacterStats, difficulty, isHero);
+            }
+            else
+            {
+                RandomLevel(CharacterStats);
+            }
         }
 
-        public static float[,] DefaultLevel(float[,] stats, int difficulty, bool isHero) //Difficult
+        public static void DefaultLevel(float[,] CharacterStats, int difficulty, bool isHero) //Difficult
         {
             int rowToPick;
 
             if (isHero)
             {
-                rowToPick = difficulty == GameConstant.One ? GameConstant.MaxValueRow : GameConstant.MinValueRow;
+                rowToPick =
+                    difficulty == GameConstant.One
+                        ? GameConstant.MaxValueRow
+                        : GameConstant.MinValueRow;
             }
             else
             {
-                rowToPick = difficulty == GameConstant.One ? GameConstant.MinValueRow : GameConstant.MaxValueRow;
+                rowToPick =
+                    difficulty == GameConstant.One
+                        ? GameConstant.MinValueRow
+                        : GameConstant.MaxValueRow;
             }
-            for (int i = 0; i < stats.GetLength(1); i++)
+            for (int i = 0; i < CharacterStats.GetLength(GameConstant.RowsIteration); i++)
             {
-                stats[GameConstant.RowToSet, i] = stats[rowToPick, i];
+                CharacterStats[GameConstant.RowToSetMaxValues, i] = CharacterStats[rowToPick, i];
             }
-            return stats;
         }
 
-        public static float[,] RandomLevel(float[,] stats)
+        public static void RandomLevel(float[,] CharacterStats)
         {
-            const int
-                ReachMaxNum = 1;
+            const int ReachMaxNum = 1;
 
             Random rnd = new();
-            for (int i = 0; i < stats.GetLength(0); i++)
+            for (int i = 0; i < CharacterStats.GetLength(GameConstant.RowsIteration); i++)
             {
-                stats[GameConstant.RowToSet, i] = rnd.Next(
-                    (int)stats[GameConstant.MinValueRow, i],
-                    (int)stats[GameConstant.MaxValueRow, i] + ReachMaxNum
+                CharacterStats[GameConstant.RowToSetMaxValues, i] = rnd.Next(
+                    (int)CharacterStats[GameConstant.MinValueRow, i],
+                    (int)CharacterStats[GameConstant.MaxValueRow, i] + ReachMaxNum
                 );
             }
-            return stats;
         }
 
-        public static float GetMaxHp(float[,] stats)
+        #region Max Stats getter
+        public static float GetMaxHp(float[,] CharacterStats)
         {
-            return stats[GameConstant.SetMaxHpRow, GameConstant.hpValueColumn];
+            return CharacterStats[GameConstant.MaxStatsRow, GameConstant.HpValueColumn];
         }
 
-        public static float GetMaxAttack(float[,] stats)
+        public static float GetMaxAttack(float[,] CharacterStats)
         {
-            return stats[GameConstant.SetMaxAttackRow, GameConstant.attackValueColumn];
+            return CharacterStats[GameConstant.MaxStatsRow, GameConstant.AttackValueColumn];
         }
 
-        public static float GetMaxReduction(float[,] stats)
+        public static float GetMaxReduction(float[,] CharacterStats)
         {
-            return stats[GameConstant.SetMaxReductionRow, GameConstant.reductionValueColumn];
+            return CharacterStats[GameConstant.MaxStatsRow, GameConstant.ReductionValueColumn];
+        }
+        #endregion
+
+        #region Current Stats Getter
+        public static float GetCurrentHp(float[,] CharacterStats)
+        {
+            return CharacterStats[GameConstant.RowCurrentValues, GameConstant.HpValueColumn];
         }
 
+        public static float GetCurrentAttack(float[,] CharacterStats)
+        {
+            return CharacterStats[GameConstant.RowCurrentValues, GameConstant.AttackValueColumn];
+        }
+
+        public static float GetCurrentReduction(float[,] CharacterStats)
+        {
+            return CharacterStats[GameConstant.RowCurrentValues, GameConstant.ReductionValueColumn];
+        }
+        #endregion
+
+        public static void InGame(float[,] CharacterStats)
+        {
+            CharacterStats[GameConstant.RowCurrentValues, GameConstant.HpValueColumn] = GetMaxHp(
+                CharacterStats
+            );
+            CharacterStats[GameConstant.RowCurrentValues, GameConstant.AttackValueColumn] =
+                GetMaxAttack(CharacterStats);
+            CharacterStats[GameConstant.RowCurrentValues, GameConstant.ReductionValueColumn] =
+                GetMaxReduction(CharacterStats);
+        }
     }
+
     public class Battle
     {
+        public static void Attack(
+            float[,] attacker,
+            float[,] defensor,
+            string attackerName,
+            string defensorName,
+            bool isGuarding = false
+        )
+        {
+            float inflictedDamage;
+
+            bool failedAttack,
+                criticalAttack;
+
+            failedAttack = Battle.Probability(GameConstant.FailedAttackProbability);
+            if (!failedAttack)
+            {
+                criticalAttack = Battle.Probability(GameConstant.CriticalProbability);
+                if (criticalAttack)
+                    Console.WriteLine(GameConstant.CriticalAttackMsg, attackerName);
+                inflictedDamage = Battle.CalculateDamage(
+                    Stats.GetCurrentAttack(attacker),
+                    Stats.GetCurrentReduction(defensor),
+                    criticalAttack,
+                    isGuarding
+                );
+                Battle.InformAction(attackerName, defensorName, inflictedDamage);
+                defensor[GameConstant.RowCurrentValues, GameConstant.HpValueColumn] =
+                    Battle.RemainedHp(Stats.GetCurrentHp(defensor), inflictedDamage);
+            }
+            else
+            {
+                Console.WriteLine(GameConstant.FailedAttackMsg, attackerName);
+            }
+        }
+
         public static float CalculateDamage(
             float attackerAd,
             float defenderReduction,
-            bool criticAttack
+            bool criticAttack,
+            bool isGuarding
         )
         {
             const int CriticalEffect = 2;
             const float Percentage = 100,
                 One = 1;
-
+            defenderReduction = isGuarding
+                ? defenderReduction * GameConstant.GuardEffect
+                : defenderReduction;
             if (criticAttack)
                 return Math.Abs(
                     attackerAd * (One - (defenderReduction / Percentage)) * CriticalEffect
                 );
 
-            return 
-                Math.Abs(attackerAd * (One - (defenderReduction / Percentage))
-            );
+            return Math.Abs(attackerAd * (One - (defenderReduction / Percentage)));
         }
 
         public static float CalculateDamage(
@@ -132,6 +206,25 @@ namespace GameMethods
             Random random = new();
 
             return Check.InRange(random.Next(MaxProbability), probability);
+        }
+
+        public static void NoticeOnCoolDown(int RemainingCD)
+        {
+            Console.WriteLine(GameConstant.OnCooldown, RemainingCD);
+        }
+    }
+
+    public class Msg
+    {
+        public static void ErrorCommand(ref bool moreAttemps ,ref int attemps ,string oufOfAttemps)
+        {
+            attemps--;
+            moreAttemps = Check.GreaterThan(attemps);
+            Console.WriteLine(
+                moreAttemps
+                    ? GameConstant.ErrorMsg
+                    : oufOfAttemps
+            );
         }
     }
 }
