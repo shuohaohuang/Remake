@@ -8,9 +8,9 @@ namespace GameMethods
 {
     public class Stats
     {
-        public static void SetPlayerCap(float[,] CharacterStats, int difficulty, bool isHero)
+        public static void SetPlayerCap(float[,] CharacterStats, string difficulty, bool isHero)
         {
-            if (Check.InRange(difficulty, GameConstant.Two))
+            if (difficulty.Equals(GameConstant.DifficultyDificult)||difficulty.Equals(GameConstant.DifficultyEasy))
             {
                 DefaultLevel(CharacterStats, difficulty, isHero);
             }
@@ -20,21 +20,21 @@ namespace GameMethods
             }
         }
 
-        public static void DefaultLevel(float[,] CharacterStats, int difficulty, bool isHero) //Difficult
+        public static void DefaultLevel(float[,] CharacterStats, string difficulty, bool isHero) //Difficult
         {
             int rowToPick;
 
             if (isHero)
             {
                 rowToPick =
-                    difficulty == GameConstant.One
+                    difficulty == GameConstant.DifficultyEasy
                         ? GameConstant.MaxValueRow
                         : GameConstant.MinValueRow;
             }
             else
             {
                 rowToPick =
-                    difficulty == GameConstant.One
+                    difficulty == GameConstant.DifficultyDificult
                         ? GameConstant.MinValueRow
                         : GameConstant.MaxValueRow;
             }
@@ -154,29 +154,6 @@ namespace GameMethods
             defenderReduction = isGuarding
                 ? defenderReduction * GameConstant.GuardEffect
                 : defenderReduction;
-            if (criticAttack)
-                return Math.Abs(
-                    attackerAd * (One - (defenderReduction / Percentage)) * CriticalEffect
-                );
-
-            return Math.Abs(attackerAd * (One - (defenderReduction / Percentage)));
-        }
-
-        public static float CalculateDamage(
-            float attackerAd,
-            float defenderReduction,
-            float guardEffect,
-            bool isGuarding,
-            bool criticAttack
-        )
-        {
-            const int CriticalEffect = 2;
-            const float Percentage = 100,
-                One = 1;
-
-            if (isGuarding)
-                defenderReduction *= guardEffect;
-
             if (criticAttack)
                 return Math.Abs(
                     attackerAd * (One - (defenderReduction / Percentage)) * CriticalEffect

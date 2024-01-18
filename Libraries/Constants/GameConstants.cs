@@ -9,6 +9,8 @@
             DefaultDifficultyMsg = "Too many attempts, default difficulty: Random\n",
             DefaultHeroStatsMsg = "Too many attempts, assigning lowest stats\n",
             DefaultMonsterStatsMsg = "Too many attempts, assigning highest stats\n",
+            DifficultyEasy="1",
+            DifficultyDificult="2",
             DifficultyMenuMsg =
                 "Choose the difficulty:"
                 + "\n\t1.Easy: highest stats for heroes, lowest stats for monster"
