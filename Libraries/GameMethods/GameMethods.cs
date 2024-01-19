@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.Metadata;
 using Checkers;
 using GameConstants;
 using Utilities;
@@ -164,7 +165,7 @@ namespace GameMethods
 
         public static float RemainedHp(float currentHp, float receivedDamage)
         {
-            return receivedDamage > currentHp ? 0 : currentHp - receivedDamage;
+            return receivedDamage > currentHp ? GameConstant.Zero : currentHp - receivedDamage;
         }
 
         public static void InformAction(
@@ -180,6 +181,7 @@ namespace GameMethods
         public static bool Probability(float probability)
         {
             const int MaxProbability = 100;
+            
             Random random = new();
 
             return Check.InRange(random.Next(MaxProbability), probability);
