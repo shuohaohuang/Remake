@@ -44,7 +44,8 @@ namespace Remake
              * attack and       [2,1]
              * damage reduction [2,2]
              */
-            bool archerDefenseMode = false;
+            bool archerDefenseMode = false,
+                archeralive;
             #endregion
 
             #region MonsterStats
@@ -68,12 +69,15 @@ namespace Remake
                 { GameConstant.Zero, GameConstant.Zero, GameConstant.Zero },
                 { monsterCurrentHp, monsterCurrentAttack, monsterCurrentReduction },
             };
+
+            bool monsterAlive;
             #endregion
 
 
             #region PorgramVariables
             string userCommand,
-                oldName = archerName;
+                oldName = archerName,
+                difficulty = GameConstant.TwoStr;
 
             string[] twoValidInputs = [GameConstant.OneStr, GameConstant.ZeroStr],
                 threeValidInputs =
@@ -94,8 +98,7 @@ namespace Remake
                         GameConstant.DmgReductionMenuMsg + GameConstant.RangedInMsg
                     ],
                 boolValidInputs = [GameConstant.Yes, GameConstant.No];
-            int difficulty = GameConstant.Two,
-                remainingAttempts = GameConstant.MaxAttempts,
+            int remainingAttempts = GameConstant.MaxAttempts,
                 roundCouter = GameConstant.One;
             float userInsertedStatsValue;
             bool validInput,
@@ -113,19 +116,8 @@ namespace Remake
             {
                 userCommand = Console.ReadLine() ?? "";
                 validInput = Check.ValidateInput(userCommand, twoValidInputs);
-                if (!validInput)
-                {
-                    remainingAttempts--;
-                    hasRemainingAttemptsMenu = Check.GreaterThan(remainingAttempts);
-                    Console.WriteLine(
-                        hasRemainingAttemptsMenu ? GameConstant.ErrorMsg : GameConstant.ErrorEndMsg
-                    );
-                }
-                else
-                {
-                    remainingAttempts = GameConstant.MaxAttempts;
-                    hasRemainingAttemptsMenu = Check.GreaterThan(remainingAttempts);
-                }
+                Msg.ValidateInput(ref remainingAttempts, ref hasRemainingAttemptsMenu, validInput, GameConstant.ErrorEndMsg);
+
             } while (!validInput && hasRemainingAttemptsMenu);
 
             if (userCommand.Equals(GameConstant.OneStr))
@@ -137,21 +129,8 @@ namespace Remake
                 {
                     userCommand = Console.ReadLine() ?? "";
                     validInput = Check.ValidateInput(userCommand, fourValidInputs);
-
-                    if (!validInput)
-                    {
-                        Msg.ErrorCommand(
-                                ref hasRemainingAttemptsMenu,
-                                ref remainingAttempts,
-                                GameConstant.ErrorEndMsg
-                            );
-                    }
-                    else
-                    {
-                        remainingAttempts = GameConstant.MaxAttempts;
-                        hasRemainingAttemptsMenu = Check.GreaterThan(remainingAttempts);
-                        difficulty = Convert.ToInt32(userCommand);
-                    }
+                    Msg.ValidateInput(ref remainingAttempts, ref hasRemainingAttemptsMenu, validInput, GameConstant.ErrorEndMsg);
+                    difficulty = userCommand;
                 } while (!validInput && hasRemainingAttemptsMenu);
 
                 if (hasRemainingAttemptsMenu)
@@ -161,19 +140,7 @@ namespace Remake
                     {
                         userCommand = Console.ReadLine() ?? "";
                         validInput = Check.ValidateInput(userCommand, boolValidInputs);
-                        if (!validInput)
-                        {
-                            Msg.ErrorCommand(
-                                ref hasRemainingAttemptsMenu,
-                                ref remainingAttempts,
-                                GameConstant.DefaultDifficultyMsg
-                            );
-                        }
-                        else
-                        {
-                            remainingAttempts = GameConstant.MaxAttempts;
-                            hasRemainingAttemptsMenu = Check.GreaterThan(remainingAttempts);
-                        }
+                        Msg.ValidateInput(ref remainingAttempts, ref hasRemainingAttemptsMenu, validInput, GameConstant.ErrorEndMsg);
                     } while (!validInput && hasRemainingAttemptsMenu);
                 }
 
@@ -190,12 +157,8 @@ namespace Remake
                 }
 
                 // Starter Stats SetMax
-                if (Check.InRange(difficulty, GameConstant.Three))
-                {
-                    Stats.SetPlayerCap(archer, difficulty, isHero);
-                    Stats.SetPlayerCap(monster, difficulty, !isHero);
-                }
-                else
+               
+                if (difficulty.Equals(GameConstant.DifficultyPersonalized))
                 {
                     //archer
                     Console.WriteLine(GameConstant.RequestValueOfStatsMsg, archerName);
@@ -284,12 +247,18 @@ namespace Remake
                         } while (!validInput && hasRemainingAttempts);
                     }
                 }
-                
+                else
+                {
+                    Stats.SetPlayerCap(archer, difficulty, isHero);
+                    Stats.SetPlayerCap(monster, difficulty, !isHero);
+                }
+
 
                 if (hasRemainingAttemptsMenu)
                 {
-                    Stats.InGame(archer);
-                    Stats.InGame(monster);
+                    Stats.SetInGame(archer);
+                    Stats.SetInGame(monster);
+
                     while (
                         Check.GreaterThan(Stats.GetCurrentHp(archer))
                         && Check.GreaterThan(Stats.GetCurrentHp(monster))
@@ -305,12 +274,7 @@ namespace Remake
                             {
                                 userCommand = Console.ReadLine() ?? "";
                                 validInput = Check.ValidateInput(userCommand, threeValidInputs);
-                                if (!validInput)
-                                    Msg.ErrorCommand(
-                                        ref hasRemainingAttempts,
-                                        ref remainingAttempts,
-                                        GameConstant.DefaultCommandMsg
-                                    );
+                                Msg.ValidateInput(ref remainingAttempts, ref hasRemainingAttempts, validInput, GameConstant.DefaultCommandMsg);
 
                                 if (
                                     userCommand.Equals(GameConstant.TwoStr)
@@ -319,7 +283,8 @@ namespace Remake
                                 {
                                     Battle.NoticeOnCoolDown(archerAbilityCurrentCD);
                                     validInput = !validInput;
-                                }
+                                };
+
                             } while (!validInput && hasRemainingAttempts);
 
                             remainingAttempts = GameConstant.MaxAttempts;

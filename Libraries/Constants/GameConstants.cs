@@ -10,7 +10,8 @@
             DefaultHeroStatsMsg = "Too many attempts, assigning lowest stats\n",
             DefaultMonsterStatsMsg = "Too many attempts, assigning highest stats\n",
             DifficultyEasy="1",
-            DifficultyDificult="2",
+            DifficultyDifficult="2",
+            DifficultyPersonalized = "4",
             DifficultyMenuMsg =
                 "Choose the difficulty:"
                 + "\n\t1.Easy: highest stats for heroes, lowest stats for monster"

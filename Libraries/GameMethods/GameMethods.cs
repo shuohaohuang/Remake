@@ -10,7 +10,7 @@ namespace GameMethods
     {
         public static void SetPlayerCap(float[,] CharacterStats, string difficulty, bool isHero)
         {
-            if (difficulty.Equals(GameConstant.DifficultyDificult)||difficulty.Equals(GameConstant.DifficultyEasy))
+            if (difficulty.Equals(GameConstant.DifficultyDifficult)||difficulty.Equals(GameConstant.DifficultyEasy))
             {
                 DefaultLevel(CharacterStats, difficulty, isHero);
             }
@@ -34,7 +34,7 @@ namespace GameMethods
             else
             {
                 rowToPick =
-                    difficulty == GameConstant.DifficultyDificult
+                    difficulty == GameConstant.DifficultyDifficult
                         ? GameConstant.MinValueRow
                         : GameConstant.MaxValueRow;
             }
@@ -92,7 +92,7 @@ namespace GameMethods
         }
         #endregion
 
-        public static void InGame(float[,] CharacterStats)
+        public static void SetInGame(float[,] CharacterStats)
         {
             CharacterStats[GameConstant.RowCurrentValues, GameConstant.HpValueColumn] = GetMaxHp(
                 CharacterStats
@@ -202,6 +202,34 @@ namespace GameMethods
                     ? GameConstant.ErrorMsg
                     : oufOfAttemps
             );
+        }
+
+        /*public static void ValidateInput(ref int remainingAttempts, ref bool hasMoreAttempts, bool validInput, string ErrorOutOfAttemptsMSg)
+        {
+            remainingAttempts--;
+            hasMoreAttempts = Check.GreaterThan(remainingAttempts);
+            Console.WriteLine(
+                hasMoreAttempts
+                    ? GameConstant.ErrorMsg
+                    : ErrorOutOfAttemptsMSg
+            );
+        }*/
+        public static void ValidateInput(ref int remainingAttempts, ref bool hasMoreAttempts, bool validInput, string ErrorOutOfAttemptsMSg )
+        {
+            if (!validInput)
+            {
+                remainingAttempts--;
+                hasMoreAttempts = Check.GreaterThan(remainingAttempts);
+                Console.WriteLine(
+                    hasMoreAttempts ? GameConstant.ErrorMsg : ErrorOutOfAttemptsMSg
+                );
+            }
+            else
+            {
+                remainingAttempts = GameConstant.MaxAttempts;
+                hasMoreAttempts = Check.GreaterThan(remainingAttempts);
+            }
+            
         }
     }
 }
