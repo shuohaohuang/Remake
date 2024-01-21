@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection.Metadata;
+using System.Threading;
 using Checkers;
 using GameConstants;
 using Utilities;
@@ -103,6 +104,23 @@ namespace GameMethods
             CharacterStats[GameConstant.RowCurrentValues, GameConstant.ReductionValueColumn] =
                 GetMaxReduction(CharacterStats);
         }
+
+        public static float[] Sort(float[] hp, string[] name)
+        {
+            for (int i = 0; i < hp.Length; i++)
+            {
+                for (int j = i; j< hp.Length-1; j++)
+                {
+                    if (hp[i] > hp[j])
+                    {
+                        float aux = hp[i];
+                        hp[i] = hp[j];
+                        hp[j] = aux;
+                    }
+                }
+            }
+            return hp;
+        }
     }
 
     public class Battle
@@ -116,7 +134,6 @@ namespace GameMethods
         )
         {
             float inflictedDamage;
-
             bool failedAttack,
                 criticalAttack;
 
@@ -163,6 +180,17 @@ namespace GameMethods
             return Math.Abs(attackerAd * (One - (defenderReduction / Percentage)));
         }
 
+        public static float CalculateDamage(
+            float attackerAd,
+            float defenderReduction
+        )
+        {
+            const float Percentage = 100,
+                One = 1;
+
+            return Math.Abs(attackerAd * (One - (defenderReduction / Percentage)));
+        }
+
         public static float RemainedHp(float currentHp, float receivedDamage)
         {
             return receivedDamage > currentHp ? GameConstant.Zero : currentHp - receivedDamage;
@@ -191,39 +219,49 @@ namespace GameMethods
         {
             Console.WriteLine(GameConstant.OnCooldown, RemainingCD);
         }
+        public static void heal(float healAmount,ref float currentHp, float[,] stats) 
+        {
+            
+            if (Check.GreaterThan(currentHp))
+            {
+                if(Check.InRange(currentHp + healAmount, Stats.GetMaxHp(stats)))
+                {
+                    currentHp += healAmount;
+                }
+                else
+                {
+                    currentHp = Stats.GetMaxHp(stats);
+                }
+            }
+ 
+        }
     }
 
     public class Msg
     {
-        public static void ErrorCommand(ref bool moreAttemps ,ref int attemps ,string oufOfAttemps)
+        public static void ErrorCommand(ref bool moreAttempts ,ref int attempts ,string outOfAttempts)
         {
-            attemps--;
-            moreAttemps = Check.GreaterThan(attemps);
+            attempts--;
+            moreAttempts = Check.GreaterThan(attempts);
             Console.WriteLine(
-                moreAttemps
+                moreAttempts
                     ? GameConstant.ErrorMsg
-                    : oufOfAttemps
+                    : outOfAttempts
             );
         }
-
-        /*public static void ValidateInput(ref int remainingAttempts, ref bool hasMoreAttempts, bool validInput, string ErrorOutOfAttemptsMSg)
+        
+        public static void CurrentHp(float[] Hp, string[] names)
         {
-            remainingAttempts--;
-            hasMoreAttempts = Check.GreaterThan(remainingAttempts);
-            Console.WriteLine(
-                hasMoreAttempts
-                    ? GameConstant.ErrorMsg
-                    : ErrorOutOfAttemptsMSg
-            );
-        }*/
-        public static void ValidateInput(ref int remainingAttempts, ref bool hasMoreAttempts, bool validInput, string ErrorOutOfAttemptsMSg )
+
+        }
+        public static void ValidateInput(ref int remainingAttempts, ref bool hasMoreAttempts, bool validInput, string ErrorOutOfAttemptsMsg )
         {
             if (!validInput)
             {
                 remainingAttempts--;
                 hasMoreAttempts = Check.GreaterThan(remainingAttempts);
                 Console.WriteLine(
-                    hasMoreAttempts ? GameConstant.ErrorMsg : ErrorOutOfAttemptsMSg
+                    hasMoreAttempts ? GameConstant.ErrorMsg : ErrorOutOfAttemptsMsg
                 );
             }
             else
@@ -233,5 +271,6 @@ namespace GameMethods
             }
             
         }
+        
     }
 }

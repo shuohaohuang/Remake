@@ -9,8 +9,8 @@
             DefaultDifficultyMsg = "Too many attempts, default difficulty: Random\n",
             DefaultHeroStatsMsg = "Too many attempts, assigning lowest stats\n",
             DefaultMonsterStatsMsg = "Too many attempts, assigning highest stats\n",
-            DifficultyEasy="1",
-            DifficultyDifficult="2",
+            DifficultyEasy = "1",
+            DifficultyDifficult = "2",
             DifficultyPersonalized = "4",
             DifficultyMenuMsg =
                 "Choose the difficulty:"
@@ -47,13 +47,23 @@
             Yes = "Y",
             ZeroStr = "0",
             MonsterName = "Monster",
-            ArcherName = "Archer";
+            ArcherName = "Archer",
+            ArcherAbility = "{0} has stunned {1} for {2} turns",
+            BarbarianName = "Barbarian",
+            BarbarianAbility = "{0} is immune to damage for {1} turns",
+            MageName = "Mage",
+            MageAbility = "{0} has dealt {1} damage to {2}",
+            DruidName = "Druid",
+            DruidAbility = "{0} has healed {1} {2} hp";
+
 
         public const int Zero = 0,
             One = 1,
             Two = 2,
             Three = 3,
             Four = 4,
+            Hundred=100,
+            FiveHundred = 100,
             SkillCd = 5,
             RowsIteration = 1,
             RowToSetMaxValues = 2,
@@ -66,20 +76,39 @@
             HpValueColumn = 0,
             MaxStatsRow = 2,
             AttackValueColumn = 1,
+            GuardEffect = 2,
             ReductionValueColumn = 2;
 
-        public const float ArcherSystemLimitMinHp = 1000f,
+        public const float ArcherSystemLimitMinHp = 1500f,
             ArcherSystemLimitMinAttack = 200f,
             ArcherSystemLimitMinReduction = 25f,
             ArcherSystemLimitMaxHp = 2000f,
             ArcherSystemLimitMaxAttack = 300f,
             ArcherSystemLimitMaxReduction = 35f,
+            BarbarianSystemLimitMinHp = 3000f,
+            BarbarianSystemLimitMinAttack = 150f,
+            BarbarianSystemLimitMinReduction = 35f,
+            BarbarianSystemLimitMaxHp = 3750f,
+            BarbarianSystemLimitMaxAttack = 250f,
+            BarbarianSystemLimitMaxReduction = 45f,
+            MageSystemLimitMinHp = 1100f,
+            MageSystemLimitMinAttack = 300f,
+            MageSystemLimitMinReduction = 20f,
+            MageSystemLimitMaxHp = 1500f,
+            MageSystemLimitMaxAttack = 400f,
+            MageSystemLimitMaxReduction = 35f, 
+            DruidSystemLimitMinHp = 2000f,
+            DruidSystemLimitMinAttack = 70f,
+            DruidSystemLimitMinReduction = 25f,
+            DruidSystemLimitMaxHp = 2500f,
+            DruidSystemLimitMaxAttack = 120f,
+            DruidSystemLimitMaxReduction = 40f,
             MonsterSystemLimitMinHp = 7000f,
             MonsterSystemLimitMinAttack = 300f,
             MonsterSystemLimitMinReduction = 20f,
             MonsterSystemLimitMaxHp = 10000f,
             MonsterSystemLimitMaxAttack = 400f,
-            MonsterSystemLimitMaxReduction = 30f,
-            GuardEffect = 2;
+            MonsterSystemLimitMaxReduction = 30f;
+            
     }
 }

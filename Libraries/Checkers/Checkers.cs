@@ -15,17 +15,7 @@
             return Checker;
         }
 
-        public static bool Equals(string a, string b)
-        {
-            return a.ToUpper().Equals(b.ToUpper());
-        }
-
-        public static bool InRange(int num, int max)
-        {
-            return num <= max;
-        }
-
-        public static bool InRange(int num, float max)
+        public static bool InRange(float num, float max)
         {
             return num <= max;
         }
@@ -35,11 +25,6 @@
             return (num >= min && num <= max);
         }
 
-        public static bool GreaterThan(int number)
-        {
-            const int Zero = 0;
-            return number > Zero;
-        }
 
         public static bool GreaterThan(float number)
         {

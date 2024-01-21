@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Xml.Linq;
 using Checkers;
 using GameConstants;
@@ -45,9 +47,87 @@ namespace Remake
              * damage reduction [2,2]
              */
             bool archerDefenseMode = false,
-                archeralive;
+                archerAlive = true;
             #endregion
+            #region barbarian
+            string barbarianName = GameConstant.BarbarianName;
+            int barbarianAbilityCurrentCD = GameConstant.Zero;
+            int barbarianAbilityEffect = GameConstant.Hundred,
+                barbarianAbilityDuration = GameConstant.Two;
+            float barbarianCurrentHp = GameConstant.Zero,
+                barbarianCurrentAttack = GameConstant.Zero,
+                barbarianCurrentReduction = GameConstant.Zero;
+            float[,] barbarian = new float[4, 3]
+            {
+                {
+                    GameConstant.BarbarianSystemLimitMinHp,
+                    GameConstant.BarbarianSystemLimitMinAttack,
+                    GameConstant.BarbarianSystemLimitMinReduction
+                },
+                {
+                    GameConstant.BarbarianSystemLimitMaxHp,
+                    GameConstant.BarbarianSystemLimitMaxAttack,
+                    GameConstant.BarbarianSystemLimitMaxReduction
+                },
+                { GameConstant.Zero, GameConstant.Zero, GameConstant.Zero },
+                { barbarianCurrentHp, barbarianCurrentAttack, barbarianCurrentReduction }
+            };
 
+            bool barbarianDefenseMode = false,
+                barbarianAlive = true;
+            #endregion
+            #region mage
+            string mageName = GameConstant.MageName;
+            int mageAbilityCurrentCD = GameConstant.Zero;
+            int mageAbilityEffect = GameConstant.Two;
+            float mageCurrentHp = GameConstant.Zero,
+                mageCurrentAttack = GameConstant.Zero,
+                mageCurrentReduction = GameConstant.Zero;
+            float[,] mage = new float[4, 3]
+            {
+                {
+                    GameConstant.MageSystemLimitMinHp,
+                    GameConstant.MageSystemLimitMinAttack,
+                    GameConstant.MageSystemLimitMinReduction
+                },
+                {
+                    GameConstant.MageSystemLimitMaxHp,
+                    GameConstant.MageSystemLimitMaxAttack,
+                    GameConstant.MageSystemLimitMaxReduction
+                },
+                { GameConstant.Zero, GameConstant.Zero, GameConstant.Zero },
+                { mageCurrentHp, mageCurrentAttack, mageCurrentReduction }
+            };
+
+            bool mageDefenseMode = false,
+                mageAlive = true;
+            #endregion
+            #region druid
+            string druidName = GameConstant.DruidName;
+            int druidAbilityCurrentCD = GameConstant.Zero;
+            int druidAbilityEffect = GameConstant.FiveHundred;
+            float druidCurrentHp = GameConstant.Zero,
+                druidCurrentAttack = GameConstant.Zero,
+                druidCurrentReduction = GameConstant.Zero;
+            float[,] druid = new float[4, 3]
+            {
+                {
+                    GameConstant.DruidSystemLimitMinHp,
+                    GameConstant.DruidSystemLimitMinAttack,
+                    GameConstant.DruidSystemLimitMinReduction
+                },
+                {
+                    GameConstant.DruidSystemLimitMaxHp,
+                    GameConstant.DruidSystemLimitMaxAttack,
+                    GameConstant.DruidSystemLimitMaxReduction
+                },
+                { GameConstant.Zero, GameConstant.Zero, GameConstant.Zero },
+                { druidCurrentHp, druidCurrentAttack, druidCurrentReduction }
+            };
+
+            bool druidDefenseMode = false,
+                druidAlive = true;
+            #endregion
             #region MonsterStats
             string monsterName = GameConstant.MonsterName;
             int monsterRemainingStunnedTurn = GameConstant.Zero;
@@ -70,13 +150,12 @@ namespace Remake
                 { monsterCurrentHp, monsterCurrentAttack, monsterCurrentReduction },
             };
 
-            bool monsterAlive;
+            bool monsterAlive = true;
             #endregion
 
 
             #region PorgramVariables
             string userCommand,
-                oldName = archerName,
                 difficulty = GameConstant.TwoStr;
 
             string[] twoValidInputs = [GameConstant.OneStr, GameConstant.ZeroStr],
@@ -116,8 +195,12 @@ namespace Remake
             {
                 userCommand = Console.ReadLine() ?? "";
                 validInput = Check.ValidateInput(userCommand, twoValidInputs);
-                Msg.ValidateInput(ref remainingAttempts, ref hasRemainingAttemptsMenu, validInput, GameConstant.ErrorEndMsg);
-
+                Msg.ValidateInput(
+                    ref remainingAttempts,
+                    ref hasRemainingAttemptsMenu,
+                    validInput,
+                    GameConstant.ErrorEndMsg
+                );
             } while (!validInput && hasRemainingAttemptsMenu);
 
             if (userCommand.Equals(GameConstant.OneStr))
@@ -129,10 +212,15 @@ namespace Remake
                 {
                     userCommand = Console.ReadLine() ?? "";
                     validInput = Check.ValidateInput(userCommand, fourValidInputs);
-                    Msg.ValidateInput(ref remainingAttempts, ref hasRemainingAttemptsMenu, validInput, GameConstant.ErrorEndMsg);
+                    Msg.ValidateInput(
+                        ref remainingAttempts,
+                        ref hasRemainingAttemptsMenu,
+                        validInput,
+                        GameConstant.ErrorEndMsg
+                    );
                     difficulty = userCommand;
                 } while (!validInput && hasRemainingAttemptsMenu);
-
+                //Rename
                 if (hasRemainingAttemptsMenu)
                 {
                     Console.WriteLine(GameConstant.RenameMsg);
@@ -140,15 +228,36 @@ namespace Remake
                     {
                         userCommand = Console.ReadLine() ?? "";
                         validInput = Check.ValidateInput(userCommand, boolValidInputs);
-                        Msg.ValidateInput(ref remainingAttempts, ref hasRemainingAttemptsMenu, validInput, GameConstant.ErrorEndMsg);
+                        Msg.ValidateInput(
+                            ref remainingAttempts,
+                            ref hasRemainingAttemptsMenu,
+                            validInput,
+                            GameConstant.ErrorEndMsg
+                        );
                     } while (!validInput && hasRemainingAttemptsMenu);
                 }
 
-                if (Check.Equals(userCommand, GameConstant.Yes))
+                if (userCommand.ToUpper().Equals(GameConstant.Yes))
                 {
+                    string oldName = archerName;
                     Console.WriteLine(GameConstant.RequestNameMsg, archerName);
                     archerName = Utility.NameMayus(Console.ReadLine() ?? archerName);
                     Console.WriteLine(GameConstant.RenamedMsg, oldName, archerName);
+
+                    oldName = barbarianName;
+                    Console.WriteLine(GameConstant.RequestNameMsg, barbarianName);
+                    archerName = Utility.NameMayus(Console.ReadLine() ?? barbarianName);
+                    Console.WriteLine(GameConstant.RenamedMsg, oldName, barbarianName);
+
+                    oldName = mageName;
+                    Console.WriteLine(GameConstant.RequestNameMsg, mageName);
+                    mageName = Utility.NameMayus(Console.ReadLine() ?? mageName);
+                    Console.WriteLine(GameConstant.RenamedMsg, oldName, mageName);
+
+                    oldName = druidName;
+                    Console.WriteLine(GameConstant.RequestNameMsg, druidName);
+                    druidName = Utility.NameMayus(Console.ReadLine() ?? druidName);
+                    Console.WriteLine(GameConstant.RenamedMsg, oldName, druidName);
 
                     oldName = monsterName;
                     Console.WriteLine(GameConstant.RequestNameMsg, monsterName);
@@ -157,7 +266,6 @@ namespace Remake
                 }
 
                 // Starter Stats SetMax
-               
                 if (difficulty.Equals(GameConstant.DifficultyPersonalized))
                 {
                     //archer
@@ -250,31 +358,64 @@ namespace Remake
                 else
                 {
                     Stats.SetPlayerCap(archer, difficulty, isHero);
+                    Stats.SetPlayerCap(barbarian, difficulty, isHero);
+                    Stats.SetPlayerCap(mage, difficulty, isHero);
+                    Stats.SetPlayerCap(druid, difficulty, isHero);
                     Stats.SetPlayerCap(monster, difficulty, !isHero);
                 }
-
 
                 if (hasRemainingAttemptsMenu)
                 {
                     Stats.SetInGame(archer);
+                    Stats.SetInGame(barbarian);
+                    Stats.SetInGame(mage);
+                    Stats.SetInGame(druid);
                     Stats.SetInGame(monster);
 
                     while (
-                        Check.GreaterThan(Stats.GetCurrentHp(archer))
-                        && Check.GreaterThan(Stats.GetCurrentHp(monster))
+                        (archerAlive || barbarianAlive || mageAlive || druidAlive && monsterAlive)
                     )
                     {
-                        Console.WriteLine(GameConstant.Round, roundCouter);
+                        archerAlive = Check.GreaterThan(Stats.GetCurrentHp(archer));
+                        barbarianAlive = Check.GreaterThan(Stats.GetCurrentHp(barbarian));
+                        mageAlive = Check.GreaterThan(Stats.GetCurrentHp(mage));
+                        druidAlive = Check.GreaterThan(Stats.GetCurrentHp(druid));
+                        monsterAlive = Check.GreaterThan(Stats.GetCurrentHp(monster));
 
+                        float[] CurrentsHp =
+                        {
+                            Stats.GetCurrentHp(archer),
+                            Stats.GetCurrentHp(barbarian),
+                            Stats.GetCurrentHp(mage),
+                            Stats.GetCurrentHp(druid),
+                            Stats.GetCurrentHp(monster)
+                        };
+
+                        string[] names =
+                        {
+                            archerName,
+                            barbarianName,
+                            mageName,
+                            druidName,
+                            monsterName
+                        };
+
+                        Console.WriteLine(GameConstant.Round, roundCouter);
+                        //Archer Turn
                         if (Check.GreaterThan(Stats.GetCurrentHp(archer)))
-                        { //Archer Turn
+                        {
                             Console.WriteLine(GameConstant.RequestCommandMsg, archerName);
 
                             do
                             {
                                 userCommand = Console.ReadLine() ?? "";
                                 validInput = Check.ValidateInput(userCommand, threeValidInputs);
-                                Msg.ValidateInput(ref remainingAttempts, ref hasRemainingAttempts, validInput, GameConstant.DefaultCommandMsg);
+                                Msg.ValidateInput(
+                                    ref remainingAttempts,
+                                    ref hasRemainingAttempts,
+                                    validInput,
+                                    GameConstant.DefaultCommandMsg
+                                );
 
                                 if (
                                     userCommand.Equals(GameConstant.TwoStr)
@@ -283,53 +424,313 @@ namespace Remake
                                 {
                                     Battle.NoticeOnCoolDown(archerAbilityCurrentCD);
                                     validInput = !validInput;
-                                };
-
+                                }
+                                ;
                             } while (!validInput && hasRemainingAttempts);
 
                             remainingAttempts = GameConstant.MaxAttempts;
 
                             if (hasRemainingAttempts)
                             {
-                                remainingAttempts = GameConstant.MaxAttempts;
-                                do
+                                switch (userCommand)
                                 {
-                                    switch (userCommand)
-                                    {
-                                        case "1":
-                                            Battle.Attack(archer, monster, archerName, monsterName);
-                                            break;
-                                        case "2":
-                                            monsterRemainingStunnedTurn = archerAbilityEffect;
-                                            archerAbilityCurrentCD = GameConstant.SkillCd;
-                                            break;
-                                        default:
-                                            archerDefenseMode = !archerDefenseMode;
-                                            break;
-                                    }
-                                } while (!validInput && !hasRemainingAttempts);
+                                    case "1":
+                                        Battle.Attack(archer, monster, archerName, monsterName);
+                                        break;
+                                    case "2":
+                                        monsterRemainingStunnedTurn = archerAbilityEffect;
+                                        archerAbilityCurrentCD = GameConstant.SkillCd;
+                                        Console.WriteLine(
+                                            GameConstant.ArcherAbility,
+                                            archerName,
+                                            monsterName,
+                                            archerAbilityEffect
+                                        );
+                                        break;
+                                    default:
+                                        archerDefenseMode = !archerDefenseMode;
+                                        break;
+                                }
                             }
                             else
                             {
                                 hasRemainingAttempts = !hasRemainingAttempts;
-                                remainingAttempts = GameConstant.MaxAttempts;
-
                                 Battle.Attack(archer, monster, archerName, monsterName);
                             }
                         }
+                        remainingAttempts = GameConstant.MaxAttempts;
+
+                        //barbarian Turn
+                        if (Check.GreaterThan(Stats.GetCurrentHp(barbarian)))
+                        {
+                            Console.WriteLine(GameConstant.RequestCommandMsg, barbarianName);
+                            do
+                            {
+                                userCommand = Console.ReadLine() ?? "";
+                                validInput = Check.ValidateInput(userCommand, threeValidInputs);
+                                Msg.ValidateInput(
+                                    ref remainingAttempts,
+                                    ref hasRemainingAttempts,
+                                    validInput,
+                                    GameConstant.DefaultCommandMsg
+                                );
+
+                                if (
+                                    userCommand.Equals(GameConstant.TwoStr)
+                                    && Check.GreaterThan(barbarianAbilityCurrentCD)
+                                )
+                                {
+                                    Battle.NoticeOnCoolDown(barbarianAbilityCurrentCD);
+                                    validInput = !validInput;
+                                }
+                                ;
+                            } while (!validInput && hasRemainingAttempts);
+
+                            if (hasRemainingAttempts)
+                            {
+                                switch (userCommand)
+                                {
+                                    case "1":
+                                        Battle.Attack(
+                                            barbarian,
+                                            monster,
+                                            barbarianName,
+                                            monsterName
+                                        );
+                                        break;
+                                    case "2":
+                                        barbarianCurrentReduction = barbarianAbilityEffect;
+                                        barbarianAbilityCurrentCD = GameConstant.SkillCd;
+                                        Console.WriteLine(
+                                            GameConstant.BarbarianAbility,
+                                            barbarianName,
+                                            barbarianAbilityDuration
+                                        );
+                                        break;
+                                    default:
+                                        barbarianDefenseMode = !barbarianDefenseMode;
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                hasRemainingAttempts = !hasRemainingAttempts;
+
+                                Battle.Attack(barbarian, monster, barbarianName, monsterName);
+                            }
+                        }
+                        remainingAttempts = GameConstant.MaxAttempts;
+
+                        //mage turn
+                        if (Check.GreaterThan(Stats.GetCurrentHp(mage)))
+                        {
+                            Console.WriteLine(GameConstant.RequestCommandMsg, mageName);
+                            do
+                            {
+                                userCommand = Console.ReadLine() ?? "";
+                                validInput = Check.ValidateInput(userCommand, threeValidInputs);
+                                Msg.ValidateInput(
+                                    ref remainingAttempts,
+                                    ref hasRemainingAttempts,
+                                    validInput,
+                                    GameConstant.DefaultCommandMsg
+                                );
+
+                                if (
+                                    userCommand.Equals(GameConstant.TwoStr)
+                                    && Check.GreaterThan(mageAbilityCurrentCD)
+                                )
+                                {
+                                    Battle.NoticeOnCoolDown(mageAbilityCurrentCD);
+                                    validInput = !validInput;
+                                }
+                                ;
+                            } while (!validInput && hasRemainingAttempts);
+
+                            if (hasRemainingAttempts)
+                            {
+                                switch (userCommand)
+                                {
+                                    case "1":
+                                        Battle.Attack(mage, monster, mageName, monsterName);
+                                        break;
+                                    case "2":
+                                        mageCurrentReduction = mageAbilityEffect;
+                                        mageAbilityCurrentCD = GameConstant.SkillCd;
+                                        float damege =
+                                            Battle.CalculateDamage(
+                                                mageCurrentAttack,
+                                                monsterCurrentReduction
+                                            ) * mageAbilityEffect;
+                                        monsterCurrentHp -= damege;
+                                        Console.WriteLine(
+                                            GameConstant.MageAbility,
+                                            mageName,
+                                            damege,
+                                            monsterName
+                                        );
+                                        break;
+                                    default:
+                                        mageDefenseMode = !mageDefenseMode;
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                hasRemainingAttempts = !hasRemainingAttempts;
+
+                                Battle.Attack(mage, monster, mageName, monsterName);
+                            }
+                        }
+                        remainingAttempts = GameConstant.MaxAttempts;
+
+                        //druid turn
+                        if (Check.GreaterThan(Stats.GetCurrentHp(druid)))
+                        {
+                            Console.WriteLine(GameConstant.RequestCommandMsg, druidName);
+                            do
+                            {
+                                userCommand = Console.ReadLine() ?? "";
+                                validInput = Check.ValidateInput(userCommand, threeValidInputs);
+                                Msg.ValidateInput(
+                                    ref remainingAttempts,
+                                    ref hasRemainingAttempts,
+                                    validInput,
+                                    GameConstant.DefaultCommandMsg
+                                );
+
+                                if (
+                                    userCommand.Equals(GameConstant.TwoStr)
+                                    && Check.GreaterThan(druidAbilityCurrentCD)
+                                )
+                                {
+                                    Battle.NoticeOnCoolDown(druidAbilityCurrentCD);
+                                    validInput = !validInput;
+                                }
+                                ;
+                            } while (!validInput && hasRemainingAttempts);
+
+                            if (hasRemainingAttempts)
+                            {
+                                switch (userCommand)
+                                {
+                                    case "1":
+                                        Battle.Attack(druid, monster, druidName, monsterName);
+                                        break;
+                                    case "2":
+                                        druidCurrentReduction = druidAbilityEffect;
+                                        druidAbilityCurrentCD = GameConstant.SkillCd;
+                                        if (Check.GreaterThan(archerCurrentHp))
+                                        {
+                                            Console.WriteLine(
+                                                GameConstant.DruidAbility,
+                                                archerName,
+                                                druidAbilityEffect
+                                            );
+                                            Battle.heal(
+                                                druidAbilityEffect,
+                                                ref archerCurrentHp,
+                                                archer
+                                            );
+                                        }
+
+                                        if (Check.GreaterThan(barbarianCurrentHp))
+                                        {
+                                            Console.WriteLine(
+                                                GameConstant.DruidAbility,
+                                                barbarianName,
+                                                druidAbilityEffect
+                                            );
+                                            Battle.heal(
+                                                druidAbilityEffect,
+                                                ref barbarianCurrentHp,
+                                                barbarian
+                                            );
+                                        }
+
+                                        if (Check.GreaterThan(mageCurrentHp))
+                                        {
+                                            Console.WriteLine(
+                                                GameConstant.DruidAbility,
+                                                mageName,
+                                                druidAbilityEffect
+                                            );
+                                            Battle.heal(
+                                                druidAbilityEffect,
+                                                ref mageCurrentHp,
+                                                mage
+                                            );
+                                        }
+
+                                        Console.WriteLine(
+                                            GameConstant.DruidAbility,
+                                            druidName,
+                                            druidAbilityEffect
+                                        );
+                                        Battle.heal(druidAbilityEffect, ref druidCurrentHp, druid);
+                                        break;
+                                    default:
+                                        druidDefenseMode = !druidDefenseMode;
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                hasRemainingAttempts = !hasRemainingAttempts;
+
+                                Battle.Attack(druid, monster, druidName, monsterName);
+                            }
+                        }
+                        remainingAttempts = GameConstant.MaxAttempts;
 
                         if (
                             !Check.GreaterThan(monsterRemainingStunnedTurn)
                             && Check.GreaterThan(Stats.GetCurrentHp(monster))
                         )
                         {
-                            Battle.Attack(
-                                monster,
-                                archer,
-                                monsterName,
-                                archerName,
-                                archerDefenseMode
-                            );
+                            if (Check.GreaterThan(archerCurrentHp))
+                            {
+                                Battle.Attack(
+                                    monster,
+                                    archer,
+                                    monsterName,
+                                    archerName,
+                                    archerDefenseMode
+                                );
+                            }
+
+                            if (Check.GreaterThan(barbarianCurrentHp))
+                            {
+                                Battle.Attack(
+                                    monster,
+                                    barbarian,
+                                    monsterName,
+                                    barbarianName,
+                                    barbarianDefenseMode
+                                );
+                            }
+
+                            if (Check.GreaterThan(mageCurrentHp))
+                            {
+                                Battle.Attack(
+                                    monster,
+                                    mage,
+                                    monsterName,
+                                    mageName,
+                                    mageDefenseMode
+                                );
+                            }
+
+                            if (Check.GreaterThan(druidCurrentHp))
+                            {
+                                Battle.Attack(
+                                    monster,
+                                    druid,
+                                    monsterName,
+                                    druidName,
+                                    druidDefenseMode
+                                );
+                            }
                         }
 
                         Console.WriteLine(
@@ -344,16 +745,24 @@ namespace Remake
                         );
 
                         //End of Round
+
                         monsterRemainingStunnedTurn--;
                         archerAbilityCurrentCD--;
-                        archerDefenseMode = !archerDefenseMode;
+                        archerDefenseMode = false;
+                        barbarianAbilityCurrentCD--;
+                        barbarianDefenseMode = false;
+                        barbarianAbilityDuration--;
+                        mageAbilityCurrentCD--;
+                        mageDefenseMode = false;
+                        druidAbilityCurrentCD--;
+                        druidDefenseMode = false;
                         roundCouter++;
                     }
                 }
-            }
 
-            if (userCommand.Equals(GameConstant.Zero))
-                Console.WriteLine(GameConstant.EndMsg);
+                if (userCommand.Equals(GameConstant.Zero))
+                    Console.WriteLine(GameConstant.EndMsg);
+            }
         }
     }
 }
