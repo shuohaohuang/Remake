@@ -373,14 +373,15 @@ namespace Remake
                     Stats.SetInGame(monster);
 
                     while (
-                        (archerAlive || barbarianAlive || mageAlive || druidAlive && monsterAlive)
+                        ((archerAlive || barbarianAlive || mageAlive || druidAlive) && monsterAlive)
                     )
                     {
                         archerAlive = Check.GreaterThan(Stats.GetCurrentHp(archer));
                         barbarianAlive = Check.GreaterThan(Stats.GetCurrentHp(barbarian));
                         mageAlive = Check.GreaterThan(Stats.GetCurrentHp(mage));
                         druidAlive = Check.GreaterThan(Stats.GetCurrentHp(druid));
-                        monsterAlive = Check.GreaterThan(Stats.GetCurrentHp(monster));
+                       
+
 
                         float[] CurrentsHp =
                         {
@@ -401,8 +402,9 @@ namespace Remake
                         };
 
                         Console.WriteLine(GameConstant.Round, roundCouter);
+                        
                         //Archer Turn
-                        if (Check.GreaterThan(Stats.GetCurrentHp(archer)))
+                        if (archerAlive && monsterAlive)
                         {
                             Console.WriteLine(GameConstant.RequestCommandMsg, archerName);
 
@@ -459,9 +461,10 @@ namespace Remake
                             }
                         }
                         remainingAttempts = GameConstant.MaxAttempts;
-
+                        monsterAlive = Check.GreaterThan(Stats.GetCurrentHp(monster));
+                        
                         //barbarian Turn
-                        if (Check.GreaterThan(Stats.GetCurrentHp(barbarian)))
+                        if (barbarianAlive && monsterAlive)
                         {
                             Console.WriteLine(GameConstant.RequestCommandMsg, barbarianName);
                             do
@@ -520,9 +523,10 @@ namespace Remake
                             }
                         }
                         remainingAttempts = GameConstant.MaxAttempts;
-
+                        monsterAlive = Check.GreaterThan(Stats.GetCurrentHp(monster));
+                        
                         //mage turn
-                        if (Check.GreaterThan(Stats.GetCurrentHp(mage)))
+                        if (mageAlive && monsterAlive)
                         {
                             Console.WriteLine(GameConstant.RequestCommandMsg, mageName);
                             do
@@ -583,9 +587,10 @@ namespace Remake
                             }
                         }
                         remainingAttempts = GameConstant.MaxAttempts;
-
+                        monsterAlive = Check.GreaterThan(Stats.GetCurrentHp(monster));
+                        
                         //druid turn
-                        if (Check.GreaterThan(Stats.GetCurrentHp(druid)))
+                        if (druidAlive && monsterAlive)
                         {
                             Console.WriteLine(GameConstant.RequestCommandMsg, druidName);
                             do
@@ -682,6 +687,7 @@ namespace Remake
                             }
                         }
                         remainingAttempts = GameConstant.MaxAttempts;
+                        monsterAlive = Check.GreaterThan(Stats.GetCurrentHp(monster));
 
                         if (
                             !Check.GreaterThan(monsterRemainingStunnedTurn)
