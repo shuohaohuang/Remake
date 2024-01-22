@@ -166,7 +166,7 @@ namespace GameMethods
             bool isGuarding
         )
         {
-            const int CriticalEffect = 2;
+            const float CriticalEffect = 2;
             const float Percentage = 100,
                 One = 1;
             defenderReduction = isGuarding
@@ -202,8 +202,7 @@ namespace GameMethods
             float inflictedDamage
         )
         {
-            const string Msg = "{0} has dealt {1} damage to {2}";
-            Console.WriteLine(Msg, attackerName, inflictedDamage, defenderName);
+            Console.WriteLine(GameConstant.AttackMsg, attackerName, inflictedDamage, defenderName);
         }
 
         public static bool Probability(float probability)
@@ -219,18 +218,18 @@ namespace GameMethods
         {
             Console.WriteLine(GameConstant.OnCooldown, RemainingCD);
         }
-        public static void heal(float healAmount,ref float currentHp, float[,] stats) 
+        public static void heal(float healAmount, float[,] stats) 
         {
-            
-            if (Check.GreaterThan(currentHp))
+
+            if (Check.GreaterThan(Stats.GetCurrentHp(stats)))
             {
-                if(Check.InRange(currentHp + healAmount, Stats.GetMaxHp(stats)))
+                if(Check.InRange(Stats.GetCurrentHp(stats) + healAmount, Stats.GetMaxHp(stats)))
                 {
-                    currentHp += healAmount;
+                    stats[GameConstant.RowCurrentValues,GameConstant.HpValueColumn] += healAmount;
                 }
                 else
                 {
-                    currentHp = Stats.GetMaxHp(stats);
+                    stats[GameConstant.RowCurrentValues, GameConstant.HpValueColumn] = Stats.GetMaxHp(stats);
                 }
             }
  
