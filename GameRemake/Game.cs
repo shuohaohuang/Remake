@@ -162,7 +162,6 @@ namespace Remake
                 threeValidInputs =
                     [GameConstant.OneStr, GameConstant.TwoStr, GameConstant.ThreeStr],
                 fourValidInputs =
-
                     [
                         GameConstant.OneStr,
                         GameConstant.TwoStr,
@@ -179,6 +178,8 @@ namespace Remake
                 boolValidInputs = [GameConstant.Yes, GameConstant.No];
             int remainingAttempts = GameConstant.MaxAttempts,
                 roundCouter = GameConstant.One;
+            int[] cooldown = {archerAbilityCurrentCD,barbarianAbilityCurrentCD,mageAbilityCurrentCD,druidAbilityCurrentCD }
+                  
             float userInsertedStatsValue;
             bool validInput,
                 isHero = true,
